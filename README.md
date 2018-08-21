@@ -3,7 +3,8 @@ Leibniz: A Rule System for Math
 ========================
 
 Author:	Anthony John Ripa
-Date:	2018.07.20
+
+Date:	2018.08.20
 
 Live Demo at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
