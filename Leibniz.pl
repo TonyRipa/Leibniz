@@ -1,12 +1,23 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2018.08.20
+%	Date:		2018.09.20
 %	Leibniz:	A Rule System for Math
 
-:- op(0900,xfx,@).
-:- op(1000,xfx,<-).
-:- op(1100,xfx,<--).
-:- op(1200,xfx,<---).
+:- op(0800,xfx,@).
+:- op(0900,xfx,<-).
+:- op(1000,xfx,<--).
+:- op(1100,xfx,<---).
+:- op(1200,xfx,<----).
+
+preprocess(f(X),Ans) :- preprocess(X^2, Ans) , ! .
+preprocess( _ ^ 0 , 1) :- ! .
+preprocess(X^N, Ans) :- N1 is N-1 , preprocess(X^N1, XN1) , preprocess(XN1*X, Ans) , ! .
+preprocess(X+Y,X1+Y1) :- preprocess(X,X1) , preprocess(Y,Y1) , ! .
+preprocess(X-Y,X1-Y1) :- preprocess(X,X1) , preprocess(Y,Y1) , ! .
+preprocess(X*Y,X1*Y1) :- preprocess(X,X1) , preprocess(Y,Y1) , ! .
+preprocess(X/Y,X1/Y1) :- preprocess(X,X1) , preprocess(Y,Y1) , ! .
+preprocess(X@Y,X1@Y1) :- preprocess(X,X1) , preprocess(Y,Y1) , ! .
+preprocess(X,X) :- ! .
 
 simp(X/X, 1, S) :- writeln([S,9,X/X=1,trying]) , S>0 , X\=0 , ! , writeln([S,9,X/X=1,succeed]).
 
@@ -30,30 +41,25 @@ simp(A-B, Ans, S) :- writeln([S,27,A,B]) , S>0 , S2 is S-1 , simp(A, A1+A2,S2) ,
 simp(A-B, Ans, S) :- writeln([S,28,A,B]), S>0 , S2 is S-1 , simp(A, A1, S2) , simp(B,B1,S2) , simp(B1+Ans, A1,S2) , ! .
 simp(A-B, Ans, S) :- writeln([S,29,A,B]) , S>0 , S2 is S-1 , simp(A, A1, S2) , simp(B,B1,S2) , simp(Ans+B1, A1,S2) , ! .
 
-simp( X ^ 0 , 1, S) :- writeln([S,31,X]) , S>0 , ! .
-simp(X^N, Ans, S) :- writeln([S,32,X,N]) , S>0 , S2 is S-1 , N1 is N-1 , simp(X^N1, XN1, S2) , simp(XN1*X, Ans, S2) , ! .
-
 simp(A*B/C, Ans, S) :- writeln([S,34,A]) , S>0 , S2 is S-1 , simp(B,B1,S2) , simp(C,C1,S2) , B1=C1 , simp(A, Ans, S2) , ! .
 simp(A*B/C, Ans, S) :- writeln([S,35,A]) , S>0 , S2 is S-1 , simp(A/C,Z,S2) , simp(Z*B, Ans, S2) , ! .
-simp(N/D, Ans, S) :- writeln([S,36,N,D]) , S>0 , S2 is S-1 , D\=0 , simp(N,N1,S2) , simp(Ans*D, N1, S2) , writeln([S,36,N/D=Ans,succeed]).
 simp(A/B, Ans, S) :- writeln([S,37,A,B]) , S>0 , S2 is S-1 , simp(A,A1,S2) , A\=A1 , simp(A1/B, Ans, S2) , ! , writeln([S,37,A/B=Ans,succeed]) .
 simp((A+B)/C, Ans, S) :- writeln([S,38,A,B,C]) , S>0 , S2 is S-1 , simp(A/C+B/C, Ans, S2) , ! .
 simp((A-B)/C, Ans, S) :- writeln([S,39,A,B,C]) , S>0 , S2 is S-1 , simp(A/C-B/C, Ans, S2) , ! .
 
-
-simp(@(Num, _ = _ ), Num, S) :- writeln([S,42]) , S>0 , number(Num) , ! .
-simp(@(Var,Var=Con), Con, S) :- writeln([S,43]) , S>0 , !.
-simp(@(Ato, _ = _ ), Ato, S) :- writeln([S,44]) , S>0 , atom(Ato) , ! .
-simp(@(X+Y,Var=Con), Ans, S) :- writeln([S,45]) , S>0 , S2 is S-1 , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1+Y1,Ans,S2) , ! .
-simp(@(X*Y,Var=Con), Ans, S) :- writeln([S,46]) , S>0 , S2 is S-1 , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1*Y1,Ans,S2) , ! .
-simp(@(X/Y,Var=Con), Ans, S) :- writeln([S,47]) , S>0 , S2 is S-1 , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1/Y1,Ans,S2) , writeln([S,47,(X/Y@Var=Con)=Ans,succeed]).
-simp(@(Exp,Var=Con), Ans, S) :- writeln([S,48]) , S>0 , S2 is S-1 , simp(Exp,Exp2,S2) , Exp\=Exp2 , simp(@(Exp2,Var=Con), Ans,S2) , ! .
-
-simp(f(X),Ans,S) :- writeln([S,50,X]) , S>0 , S2 is S-1 , simp(X^2, Ans, S2) , ! .
+simp(@(Exp,Var=Con), Ans, S) :- writeln([S,48]) , S>0 , S2 is S-1 , simp(Exp,Exp2,S2) , (
+	Exp2 = Var , Ans = Con ;
+	atomic(Exp2) , Ans = Exp2 ;
+	Exp2 = X+Y , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1+Y1,Ans,S2) ;
+	Exp2 = X*Y , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1*Y1,Ans,S2) ;
+	Exp2 = X/Y , simp(@(X,Var=Con),X1,S2) , simp(@(Y,Var=Con),Y1,S2) , simp(X1/Y1,Ans,S2)
+) , ! .
 
 simp(X, X, S):- writeln([S,52,X=X,succeed]).
 
-<---(Answers,X) :- writeln("Depth Limiting") , bagof(Answer,simp(X,Answer,25),Answers).	%	Depth Limited
+<----(Answers,X) :- writeln("Depth Limiting") , bagof(Answer,simp(X,Answer,25),Answers).	%	Depth Limited
+
+<---(Answers,X) :- writeln("Preprocessing") , preprocess(X,X1) , <----(Answers,X1).	%	Preprocess
 
 <--(Answer,X) :- writeln("Pick Best") , <---(Answers,X) , last(Answers,Answer).	%	Pick Best
 

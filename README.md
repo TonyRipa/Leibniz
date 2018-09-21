@@ -4,9 +4,13 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2018.08.20
+Date:	2018.09.20
 
-Live Demo at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
+Live Demo of Version 1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
+
+Live Demo of Version 2 at <a href='https://swish.swi-prolog.org/p/JWdsRkzO.pl'>https://swish.swi-prolog.org/p/JWdsRkzO.pl</a>
+
+Live Demo of Version 3 at <a href='https://swish.swi-prolog.org/p/fMJuWNsH.pl'>https://swish.swi-prolog.org/p/fMJuWNsH.pl</a>
 
 Leibniz
 --------
@@ -37,3 +41,5 @@ To be clear, it should be stated that <code>Leibniz</code> is not a Calculus sys
 One way to think about where this advantage is coming from is in terms of the properties of the transformation rules. The transformation rules of algebra as they are ordinarily cast, as well as our transformation rules, are transitive ( A transformsto B and B transformsto C implies A transformsto C ). However, in addition, the transformation rules of algebra as they are ordinarily cast, are symmetric transformation rules ( A transformsto B implies B transformsto A ) and reflexive ( A transformsto A ). So the transformsto relation for the rules of algebra as they are ordinarily cast, satisfies all the requirements of an equivalence relation. So, if A transforms to B we can just write A = B. This creates the problem. 1 = 0/0 = 0 implies 0 = 1. By not having symmetry, we avoid that problem 1 → 0/0 and 0 → 0/0 but there's nothing that 0/0 transformto. So, we never get 0 → 1 or 1 → 0 or 0=1.
 
 To expand on this, we might consider the problem of simplifying 0/0. If 0/0 is a non-terminal, and the replacement rules can never transform it into a terminal node, then we would have an expression that cannot be parsed into anything (including itself). One solution is to allow 0/0 as a terminal. This might obscure other solutions if there are any so instead of returning the first terminal we could return the list of all terminals. In the case of parsing 0/0 we get the list [0/0]. In case of parsing h/h@h=0 we get the list [0/0,1]. As the parse order always tries to evaluate @ first the 0/0 will always be the earlier solution. We can return the last solution as the canonical solution. So, 0/0 parses to 0/0, and h/h@h=1 parses to 1.
+
+Furthermore, if we are always going to return the canonical solution, we might as well save time and calculate a smaller parse tree. When calculating h/h@h=0, we might as well always simplify the expression to the left of the @ symbol first (in this case h/h simplifies to 1) then apply the @h=0 (in this case 1@h=0) to get the answer (in this case 1). This way we only return 0/0 when required (for example, if the input were literally 0/0, or if the input were something like 0/0@h=0).
