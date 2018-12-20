@@ -1,12 +1,19 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2018.11.19
+%	Date:		2018.12.19
 %	Leibniz:	A Rule System for Math
 
-:- op(0900,xfx,@).
-:- op(1000,xfx,<-).
-:- op(1100,xfx,<--).
-:- op(1200,xfx,<---).
+:- op(0800,xfx,@).
+:- op(0900,xfx,<-).
+:- op(1000,xfx,<--).
+:- op(1100,xfx,<---).
+:- op(1200,xfx,<----).
+
+:- dynamic see/0.
+
+if(Condition,Statement) :- Condition->Statement ; true .
+
+show(Text) :- if(see, writeln(Text)) .
 
 preprocess(f(X),Ans) :- preprocess(X^2, Ans) , ! .
 preprocess( _ ^ 0 , 1) :- ! .
@@ -61,14 +68,6 @@ simp(@(Exp,Var=Con), Ans) :- show([48]) , simp(Exp,Exp2) , (
 
 simp(X, X):- show([52,X=X,succeed]).
 
-<---(Answer,X) :- show("Preprocessing") , preprocess(X,Answer) .	%	Preprocess
-
-<--(Answer,X) :- <---(P,X) , show("Simplifying") , simp(P,Answer) .	%	Simplify
-
-<-(Answer,X) :- <--(Simp,X) , show("Factoring") , factor(Simp,Answer) .	%	Factor
-
-show(Text) :- writeln(Text) .
-
 factor(X+X, 2*X1) :- factor(X, X1) , ! .
 factor(N*X+X, N2*X) :- number(N) , N2 is N+1 , ! .
 factor(A+B, Ans) :- factor(A, A1) , A\=A1 , factor(A1+B, Ans) , ! .
@@ -78,3 +77,8 @@ factor(X^N*X, X^N2) :- number(N) , N2 is N+1 , ! .
 factor(A*B, Ans) :- factor(A, A1) , A\=A1 , factor(A1*B, Ans) , ! .
 factor(A*B, Ans) :- factor(B, B1) , B\=B1 , factor(A*B1, Ans) , ! .
 factor(X, X).
+
+<----(Answer,X) :- if(not(see),assert(see)) , show("Preprocessing") , preprocess(X,Answer) .	%	Preprocess
+<---(Answer,X) :- <----(P,X) , show("Simplifying") , simp(P,Answer) .							%	Simplify
+<--(Answer,X) :- <---(Simp,X) , show("Factoring") , factor(Simp,Answer) .						%	Factor
+<-(Answer,X) :- if(see,retract(see)) , preprocess(X,P) , simp(P,Simp) , factor(Simp,Answer) .	%	Quiet
