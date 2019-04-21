@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2019.03.20
+Date:	2019.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -13,6 +13,8 @@ Live Demo of Version  2 at <a href='https://swish.swi-prolog.org/p/JWdsRkzO.pl'>
 Live Demo of Version  3 at <a href='https://swish.swi-prolog.org/p/fMJuWNsH.pl'>https://swish.swi-prolog.org/p/fMJuWNsH.pl</a>
 
 Live Demo of Version  4 at <a href='https://swish.swi-prolog.org/p/oeuNtQbk.pl'>https://swish.swi-prolog.org/p/oeuNtQbk.pl</a>
+
+Live Demo of Version  5 at <a href='https://swish.swi-prolog.org/p/txPnJtvm.pl'>https://swish.swi-prolog.org/p/txPnJtvm.pl</a>
 
 Live Demo of Version  6 at <a href='https://swish.swi-prolog.org/p/zhOrBjYr.pl'>https://swish.swi-prolog.org/p/zhOrBjYr.pl</a>
 
@@ -23,6 +25,8 @@ Live Demo of Version  8 at <a href='https://swish.swi-prolog.org/p/nTiEvFQq.pl'>
 Live Demo of Version  9 at <a href='https://swish.swi-prolog.org/p/bDaiBkLV.pl'>https://swish.swi-prolog.org/p/bDaiBkLV.pl</a>
 
 Live Demo of Version 10 at <a href='https://swish.swi-prolog.org/p/EuEYjSIE.pl'>https://swish.swi-prolog.org/p/EuEYjSIE.pl</a>
+
+Live Demo of Version 11 at <a href='https://swish.swi-prolog.org/p/BmSRzUaV.pl'>https://swish.swi-prolog.org/p/BmSRzUaV.pl</a>
 
 Leibniz
 --------
