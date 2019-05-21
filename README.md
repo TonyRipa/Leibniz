@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2019.04.20
+Date:	2019.05.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -27,6 +27,8 @@ Live Demo of Version  9 at <a href='https://swish.swi-prolog.org/p/bDaiBkLV.pl'>
 Live Demo of Version 10 at <a href='https://swish.swi-prolog.org/p/EuEYjSIE.pl'>https://swish.swi-prolog.org/p/EuEYjSIE.pl</a>
 
 Live Demo of Version 11 at <a href='https://swish.swi-prolog.org/p/BmSRzUaV.pl'>https://swish.swi-prolog.org/p/BmSRzUaV.pl</a>
+
+Live Demo of Version 12 at <a href='https://swish.swi-prolog.org/p/jBWdZyZS.pl'>https://swish.swi-prolog.org/p/jBWdZyZS.pl</a>
 
 Leibniz
 --------
@@ -59,3 +61,53 @@ One way to think about where this advantage is coming from is in terms of the pr
 To expand on this, we might consider the problem of simplifying 0/0. If 0/0 is a non-terminal, and the replacement rules can never transform it into a terminal node, then we would have an expression that cannot be parsed into anything (including itself). One solution is to allow 0/0 as a terminal. This might obscure other solutions if there are any so instead of returning the first terminal we could return the list of all terminals. In the case of parsing 0/0 we get the list [0/0]. In case of parsing h/h@h=0 we get the list [0/0,1]. As the parse order always tries to evaluate @ first the 0/0 will always be the earlier solution. We can return the last solution as the canonical solution. So, 0/0 parses to 0/0, and h/h@h=0 parses to 1.
 
 Furthermore, if we are always going to return the canonical solution, we might as well save time and calculate a smaller parse tree. When calculating h/h@h=0, we might as well always simplify the expression to the left of the @ symbol first (in this case h/h simplifies to 1) then apply the @h=0 (in this case 1@h=0) to get the answer (in this case 1). This way we only return 0/0 when required (for example, if the input were literally 0/0, or if the input were something like 0/0@h=0).
+
+Semantics
+---------
+One way to think about the comparison between <code>Leibniz</code> and other approaches, is in terms of semantics. The term semantics is popular in the field of logic. To logicians, the term semantics is intended to mean something like the everyday word meaning. However, logicians' definition seems somewhat forced, and alternative interpretations seem needed. Nevertheless, the word can be used to refer to a practical distinction in logic. Sentences have two things about them that can be studied. One is their syntax. This is like the way the symbols are arranged in the sentence, and relates to the rules of arranging such symbols. The second is their semantics. This is the so-called meaning of the sentence. As an example, one can imagine the same sequence of symbols having one meaning in one language, and a different meaning in another language. This is the practical distinction that I want now.
+
+Consider x+x=2x. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. This semantics defers algebraic truths to arithmetic truths.
+
+Consider x/x=1. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. Under that semantics you try many numbers and it works. However, if you try 0 then you get 0/0=1. This is not unambiguously true in normal arithmetic. Therefore, x/x=1 is not unambiguously true in normal algebra.
+
+Let us now consider an alternate semantics. This semantics will not defer to arithmetic for its meaning. This semantics will ground its meaning directly in generic quantities. Consider x+x=2x. This is true because whenever I add a thing to itself, then I have 2 of that thing. So, x+x=2x is true. That's the argument. It is not deferred to arithmetic to check, because that is not what is meant with this new semantics. Consider x/x=1. How many quantities per quantity do we have? Well, 1. So x/x=1. This statement is judged true.
+
+This semantics seems to have a corresponding visual interpretation:
+
+<pre>
+		   ▄█
+		 ▄▀ █ x
+	   ▄▀   █ 
+	 ▄█▄▄▄▄▄█
+	 	 x
+</pre>
+
+If we consider how many steps we rise, for each step we go to the right then the answer is 1. So x/x=1. You can think the slope is 1.
+
+Similarly:
+
+<pre>
+			█
+		   ██
+		  █ █
+		 █  █ 
+		█   █ 2x
+	   █    █
+	  █     █ 
+	 ████████
+	 	 x
+</pre>
+
+If we consider how many steps up we go up, for each step we go to the right then the answer is 2. So 2x/x=2. You can think the slope is 2.
+
+Normally, x stands in for a particular number, or rather any particular number. We check that an algebraic equation is true by checking that the equation holds after substituting particular numbers in for x. This kind of x is usually referred to as a variable. The name variable is not that great but it is intended to signify that it is not one particular number.
+
+Our x has a meaning that does not seem to be identical to its normal usage. We do not mean varying over different particular numbers that may be substituted for x. We mean that x is a quantity. It is not a particular quantity. It is a general quantity. It is a generic quantity. We merely think about what would be true for a generic quantity.
+
+This suggests that we may escape the degeneracy that happens in normal algebra where a square, and a right triangle of same length are the same thing if the length is zero. For example, ordinarily [½x²/x² @ x=0] = 0/0 undefined. For us [½x²/x² @ x=0] = ½. Triangles are triangles, no matter their size. Same for squares. Their ratio is always ½. For them, some triangles are so small they lose their identity and become a point.
+
+The semantics of arithmetic is something of a foundation. The semantics of normal algebra is grounded in that foundation. As such, normal algebra struggles in the same places where arithmetic struggles. For example, they both struggle with ratios of small quantities. Fortunately, algebra need not be grounded in arithmetic. We have provided an alternate semantics for algebra. It is robust to ratios of small quantities. Other systems may use this semantics as their foundation. We may turn the tables and ground arithmetic in algebra. We may also ground calculus in algebra.
+
+One reason to think that we may have gotten it backwards is by thinking about number and quantity. Numbers are things like 5 or 7. Numbers are particular quantities. In normal algebra, we have variables. We think of them as varying over different numbers. Variables vary over particular quantities. The notion of not being a particular quantity is constructed as varying over particular quantities. This does not quite capture the notion of not being particular. This construction leads to confusions about things like x/x. Instead, we may think of a generic quantity. This generic quantity is not standing in for particular quantities. Generic quantities are not generic particular quantities. The particularity fails to help, and helps to fail. The generic quantity is just that: a quantity. It may have a name, like x. However, this does not make it particular. Furthermore, the rules of how to manipulate quantities that are not particular, is not constrained by the rules of how to manipulate quantities that are particular.
+
+In the alternative, rather than changing the semantics of algebra, we can change the semantics of arithmetic. Earlier, we spoke about parsing x/x@x=0 as either 1) (x@x=0)/(x@x=0) then 0/0 or as 2) 1@x=0 then 1. In this 2 branch tree we avoid the 0/0 branch to get 1. We formalized this at one point with directional parses → instead of bidirectional =. We could try fixing arithmetic this way then basing algebra on it. 1 → 0/0 and 0 → 0/0 but not 0/0 → something. Perhaps, it is not entirely important if we fix algebra, and then base arithmetic on the fixed algebra, or if we fix arithmetic and base algebra on the new arithmetic. It is important that we fix. We could also fix both and merely have them compatible, and perhaps interderivable without the need of declaring one as the foundation.
