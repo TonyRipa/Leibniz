@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2019.05.20
+Date:	2019.06.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -29,6 +29,8 @@ Live Demo of Version 10 at <a href='https://swish.swi-prolog.org/p/EuEYjSIE.pl'>
 Live Demo of Version 11 at <a href='https://swish.swi-prolog.org/p/BmSRzUaV.pl'>https://swish.swi-prolog.org/p/BmSRzUaV.pl</a>
 
 Live Demo of Version 12 at <a href='https://swish.swi-prolog.org/p/jBWdZyZS.pl'>https://swish.swi-prolog.org/p/jBWdZyZS.pl</a>
+
+Live Demo of Version 13 at <a href='https://swish.swi-prolog.org/p/XKwSQIHP.pl'>https://swish.swi-prolog.org/p/XKwSQIHP.pl</a>
 
 Leibniz
 --------
@@ -75,11 +77,11 @@ Let us now consider an alternate semantics. This semantics will not defer to ari
 This semantics seems to have a corresponding visual interpretation:
 
 <pre>
-		   ▄█
-		 ▄▀ █ x
-	   ▄▀   █ 
+           ▄█
+         ▄▀ █ x
+       ▄▀   █ 
 	 ▄█▄▄▄▄▄█
-	 	 x
+         x
 </pre>
 
 If we consider how many steps we rise, for each step we go to the right then the answer is 1. So x/x=1. You can think the slope is 1.
@@ -87,15 +89,15 @@ If we consider how many steps we rise, for each step we go to the right then the
 Similarly:
 
 <pre>
-			█
-		   ██
-		  █ █
-		 █  █ 
-		█   █ 2x
-	   █    █
-	  █     █ 
-	 ████████
-	 	 x
+            █
+           ██
+          █ █
+         █  █ 
+        █   █ 2x
+       █    █
+      █     █ 
+     ████████
+         x
 </pre>
 
 If we consider how many steps up we go up, for each step we go to the right then the answer is 2. So 2x/x=2. You can think the slope is 2.
