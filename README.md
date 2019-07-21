@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2019.06.20
+Date:	2019.07.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -31,6 +31,8 @@ Live Demo of Version 11 at <a href='https://swish.swi-prolog.org/p/BmSRzUaV.pl'>
 Live Demo of Version 12 at <a href='https://swish.swi-prolog.org/p/jBWdZyZS.pl'>https://swish.swi-prolog.org/p/jBWdZyZS.pl</a>
 
 Live Demo of Version 13 at <a href='https://swish.swi-prolog.org/p/XKwSQIHP.pl'>https://swish.swi-prolog.org/p/XKwSQIHP.pl</a>
+
+Live Demo of Version 14 at <a href='https://swish.swi-prolog.org/p/FrxKkJXa.pl'>https://swish.swi-prolog.org/p/FrxKkJXa.pl</a>
 
 Leibniz
 --------
@@ -80,7 +82,7 @@ This semantics seems to have a corresponding visual interpretation:
            ▄█
          ▄▀ █ x
        ▄▀   █ 
-	 ▄█▄▄▄▄▄█
+     ▄█▄▄▄▄▄█
          x
 </pre>
 
