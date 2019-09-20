@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2019.08.20
+%	Date:		2019.09.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0800,xfx,@).
@@ -83,7 +83,7 @@ multi_diff([_|T],N,A) :- multi_diff(T,N,A) , ! .
 factors(N,[N]) :- number(N) , ! .
 factors(prod([F]),A) :- factors(F,A) , ! .
 factors(prod(F),F) :- ! .
-factors(sum(S),[prod(D1),sum(N3)]) :- maplist(factors,S,N1) , reduce(multi_intersect,N1,D1) , maplist(multi_diff(D1),N1,N2) , setof(prod(X),member(X,N2),N3) , ! .
+factors(sum(S),[prod(D1),sum(N3)]) :- maplist(factors,S,N1) , reduce(multi_intersect,N1,D1) , maplist(multi_diff(D1),N1,N2) , bagof(prod(X),member(X,N2),N3) , ! .
 
 factor(E,A) :- factors(E,F) , flat(prod(F),A) , ! .
 
