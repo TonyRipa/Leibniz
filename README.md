@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2020.1.20
+Date:	2020.02.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -45,6 +45,8 @@ Live Demo of Version 18 at <a href='https://swish.swi-prolog.org/p/oJwKjMry.pl'>
 Live Demo of Version 19 at <a href='https://swish.swi-prolog.org/p/lltCdZLR.pl'>https://swish.swi-prolog.org/p/lltCdZLR.pl</a>
 
 Live Demo of Version 20 at <a href='https://swish.swi-prolog.org/p/DEKeboal.pl'>https://swish.swi-prolog.org/p/DEKeboal.pl</a>
+
+Live Demo of Version 21 at <a href='https://swish.swi-prolog.org/p/KAPHrSTb.pl'>https://swish.swi-prolog.org/p/KAPHrSTb.pl</a>
 
 Leibniz
 --------
@@ -126,4 +128,4 @@ The semantics of arithmetic is something of a foundation. The semantics of norma
 
 One reason to think that we may have gotten it backwards is by thinking about number and quantity. Numbers are things like 5 or 7. Numbers are particular quantities. In normal algebra, we have variables. We think of them as varying over different numbers. Variables vary over particular quantities. The notion of not being a particular quantity is constructed as varying over particular quantities. This does not quite capture the notion of not being particular. This construction leads to confusions about things like x/x. Instead, we may think of a generic quantity. This generic quantity is not standing in for particular quantities. Generic quantities are not generic particular quantities. The particularity fails to help, and helps to fail. The generic quantity is just that: a quantity. It may have a name, like x. However, this does not make it particular. Furthermore, the rules of how to manipulate quantities that are not particular, is not constrained by the rules of how to manipulate quantities that are particular.
 
-In the alternative, rather than changing the semantics of algebra, we can change the semantics of arithmetic. Earlier, we spoke about parsing x/x@x=0 as either 1) (x@x=0)/(x@x=0) then 0/0 or as 2) 1@x=0 then 1. In this 2 branch tree we avoid the 0/0 branch to get 1. We formalized this at one point with directional parses → instead of bidirectional =. We could try fixing arithmetic this way then basing algebra on it. 1 → 0/0 and 0 → 0/0 but not 0/0 → something. Perhaps, it is not entirely important if we fix algebra, and then base arithmetic on the fixed algebra, or if we fix arithmetic and base algebra on the new arithmetic. It is important that we fix. We could also fix both and merely have them compatible, and perhaps interderivable without the need of declaring one as the foundation.
+In the alternative, rather than changing the semantics of algebra, we can change the semantics of arithmetic. Earlier, we spoke about parsing x/x@x=0. We can parse it  as (x@x=0)/(x@x=0) then 0/0. We can parse it as 1@x=0 then 1. In this 2 branch tree we avoid the 0/0 branch to get 1. We formalized this at one point with directional parses → instead of bidirectional =. We could try fixing arithmetic this way then basing algebra on it. 1 → 0/0 and 0 → 0/0 but not 0/0 → something. Perhaps, it is not entirely important if we fix algebra, and then base arithmetic on the fixed algebra, or if we fix arithmetic and base algebra on the new arithmetic. It is important that we fix. We could also fix both and merely have them compatible, and perhaps interderivable without the need of declaring one as the foundation.
