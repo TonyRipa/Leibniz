@@ -1,9 +1,10 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.02.20
+%	Date:		2020.03.20
 %	Leibniz:	A Rule System for Math
 
-:- op(0700,fx,*).
+:- op(0400,fy,/).
+:- op(0700,fy,*).
 :- op(0800,xfx,@).
 :- op(0900,xfx,<-).
 :- op(1000,xfx,<--).
@@ -21,15 +22,16 @@ succ(Text) :- if(see, (write('+ '),writeln(Text))) .
 prepro(0,sum([])) :- shop(('01',0)) , ! .
 prepro(1,prod([])) :- shop(('02',1)) , ! .
 prepro(f(X),Ans) :- shop(('03',f(X))) , prepro(X*X, Ans) , ! .
-prepro(+A,Ans) :- shop(('04',+A)) , prepro(A,Ans) , ! .
-prepro(*A,Ans) :- shop(('05',*A)) , prepro(A,Ans) , ! .
-prepro(-A,Ans) :- shop(('06',-A)) , prepro(A,AP) , getsum(AP,AL) , prepro(traction([],AL),Ans) , ! .
-prepro(A+B,Ans) :- shop(('07',A+B)) , prepro(A,AP) , prepro(B,BP) , getsum(AP,AL) , getsum(BP,BL) , append(AL,BL,LR) , prepro(sum(LR),Ans) , ! .
-prepro(A*B,Ans) :- shop(('08',A*B)) , prepro(A,AP) , prepro(B,BP) , getprod(AP,AL) , getprod(BP,BL) , append(AL,BL,LR) , prepro(prod(LR),Ans) , ! .
-prepro(A-B,Ans) :- shop(('09',A-B)) , prepro(A,AP) , prepro(B,BP) , getsum(AP,AL) , getsum(BP,BL) , prepro(traction(AL,BL),Ans) , ! .
-prepro(A/B,Ans) :- shop(('10',A/B)) , prepro(A,AP) , prepro(B,BP) , getprod(AP,AL) , getprod(BP,BL) , prepro(fraction(AL,BL),Ans) , ! .
-prepro(A@B=C, AP@B=CP) :- shop(('11',A@B)) , prepro(A,AP) , prepro(C,CP) , ! .
-prepro(X,Ans) :- shop(('12',X)) , flat(X,Ans) , ! .
+prepro(A+B,Ans) :- shop(('04',A+B)) , prepro(A,AP) , prepro(B,BP) , getsum(AP,AL) , getsum(BP,BL) , append(AL,BL,LR) , prepro(sum(LR),Ans) , ! .
+prepro(A*B,Ans) :- shop(('05',A*B)) , prepro(A,AP) , prepro(B,BP) , getprod(AP,AL) , getprod(BP,BL) , append(AL,BL,LR) , prepro(prod(LR),Ans) , ! .
+prepro(A-B,Ans) :- shop(('06',A-B)) , prepro(A,AP) , prepro(B,BP) , getsum(AP,AL) , getsum(BP,BL) , prepro(traction(AL,BL),Ans) , ! .
+prepro(A/B,Ans) :- shop(('07',A/B)) , prepro(A,AP) , prepro(B,BP) , getprod(AP,AL) , getprod(BP,BL) , prepro(fraction(AL,BL),Ans) , ! .
+prepro(A@B=C, AP@B=CP) :- shop(('08',A@B)) , prepro(A,AP) , prepro(C,CP) , ! .
+prepro(+A,Ans) :- shop(('09',+A)) , prepro(A,Ans) , ! .
+prepro(*A,Ans) :- shop(('10',*A)) , prepro(A,Ans) , ! .
+prepro(-A,Ans) :- shop(('11',-A)) , prepro(A,AP) , getsum(AP,AL) , prepro(traction([],AL),Ans) , ! .
+prepro(/A,Ans) :- shop(('12',/A)) , prepro(A,AP) , getprod(AP,AL) , prepro(fraction([],AL),Ans) , ! .
+prepro(X,Ans) :- shop(('13',X)) , flat(X,Ans) , ! .
 
 flat(prod([H]),Ans) :- flat(H,Ans) , ! .
 flat(sum([H]),Ans) :- flat(H,Ans) , ! .

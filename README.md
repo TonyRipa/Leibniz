@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2020.02.20
+Date:	2020.03.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -47,6 +47,8 @@ Live Demo of Version 19 at <a href='https://swish.swi-prolog.org/p/lltCdZLR.pl'>
 Live Demo of Version 20 at <a href='https://swish.swi-prolog.org/p/DEKeboal.pl'>https://swish.swi-prolog.org/p/DEKeboal.pl</a>
 
 Live Demo of Version 21 at <a href='https://swish.swi-prolog.org/p/KAPHrSTb.pl'>https://swish.swi-prolog.org/p/KAPHrSTb.pl</a>
+
+Live Demo of Version 22 at <a href='https://swish.swi-prolog.org/p/KyEsVtPj.pl'>https://swish.swi-prolog.org/p/KyEsVtPj.pl</a>
 
 Leibniz
 --------
