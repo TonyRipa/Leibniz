@@ -4,7 +4,7 @@ Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2020.03.20
+Date:	2020.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -49,6 +49,8 @@ Live Demo of Version 20 at <a href='https://swish.swi-prolog.org/p/DEKeboal.pl'>
 Live Demo of Version 21 at <a href='https://swish.swi-prolog.org/p/KAPHrSTb.pl'>https://swish.swi-prolog.org/p/KAPHrSTb.pl</a>
 
 Live Demo of Version 22 at <a href='https://swish.swi-prolog.org/p/KyEsVtPj.pl'>https://swish.swi-prolog.org/p/KyEsVtPj.pl</a>
+
+Live Demo of Version 23 at <a href='https://swish.swi-prolog.org/p/ywXZGtSr.pl'>https://swish.swi-prolog.org/p/ywXZGtSr.pl</a>
 
 Leibniz
 --------
@@ -102,7 +104,7 @@ This semantics seems to have a corresponding visual interpretation:
          x
 </pre>
 
-If we consider how many steps we rise, for each step we go to the right then the answer is 1. So x/x=1. You can think the slope is 1.
+If we consider how many steps we rise, for each step we go to the right, then the answer is 1. So x/x=1. You can think the slope is 1.
 
 Similarly:
 
@@ -118,7 +120,7 @@ Similarly:
          x
 </pre>
 
-If we consider how many steps up we go up, for each step we go to the right then the answer is 2. So 2x/x=2. You can think the slope is 2.
+If we consider how many steps up we go up, for each step we go to the right, then the answer is 2. So 2x/x=2. You can think the slope is 2.
 
 Normally, x stands in for a particular number, or rather any particular number. We check that an algebraic equation is true by checking that the equation holds after substituting particular numbers in for x. This kind of x is usually referred to as a variable. The name variable is not that great but it is intended to signify that it is not one particular number.
 

@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.03.20
+%	Date:		2020.04.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0400,fy,/).
@@ -92,7 +92,7 @@ factors(prod([F]),A) :- factors(F,A) , ! .
 factors(prod(F),F) :- ! .
 factors(sum([F]),A) :- factors(F,A) , ! .
 factors(sum(S),[prod(D1),sum(N3)]) :- maplist(factors,S,N1) , reduce(multi_intersect,N1,D1) , maplist(multi_diff(D1),N1,N2) , bagof(prod(X),member(X,N2),N3) , ! .
-factors(traction(X,Y),[prod(I),traction(X2,Y2)]) :- factors(sum(X),X1),factors(sum(Y),Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
+factors(traction(X,Y),[prod(I),traction(X2,[prod(Y2)])]) :- factors(sum(X),X1),factors(sum(Y),Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
 
 factor(E,A) :- factors(E,F) , flat(prod(F),A) , ! .
 
