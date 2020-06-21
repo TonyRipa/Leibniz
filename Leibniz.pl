@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.05.20
+%	Date:		2020.06.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0400,fy,/).
@@ -102,7 +102,7 @@ go(sum([H|T]),Ans) :- show(('03',sum([H|T]))) , go(H,HS) , go(sum(T),TS) , getsu
 go(A-B,Ans) :- show(('04',A-B)) , expandf(A,A0) , getsum(A0,A1) , expandf(B,B0) , getsum(B0,[B1]) , select(B1,A1,L) , go(sum(L),Ans) , succ(('04',Ans)) , ! .
 go(N-Zero,Ans) :- show(('05',N-Zero)) , equal(Zero,sum([])) , go(N,Ans) , succ(('05',Ans)) , ! .
 go(N/One,Ans) :- show(('06',N/One)) , equal(One,prod([])) , go(N,Ans) , succ(('06',Ans)) , ! .
-go(Zero/D,sum([])) :- show(('07',Zero/D)) , equal(Zero,sum([])) , not(equal(D,sum([]))) , succ(('07',sum([]))) , ! .
+go(Zero/D,Ans) :- show(('07',Zero/D)) , equal(Zero,sum([])) , ( equal(D,sum([])) -> Ans=sum([])/sum([]) ; Ans=sum([]) ) , succ(('07',Ans)) , ! .
 go(N/D,Ans) :- show(('08',N/D)) , factor(N,F) , getprod([F,D],[N1,D1]) , subd(N1,D1,N0,D0) , flat([prod(N0),prod(D0)],[A,B]) , go(A/B,Ans) , succ(('08',Ans)) , ! .
 go(N-D,Ans) :- show(('09',N-D)) , getsum([N,D],[N1,D1]) , subd(N1,D1,N0,D0) , flat([sum(N0),sum(D0)],[N2,D2]) , go(N2-D2,Ans) , succ(('09',Ans)) , ! .
 go(N/D,Ans) :- show(('10',N/D)) , go(N,sum([H|T])) , go(D,D1) , go(H/D1,H1) , go(sum(T)/D1,T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('10',Ans)) , ! .

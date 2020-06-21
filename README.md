@@ -1,10 +1,9 @@
 
-Leibniz: A Rule System for Math
-========================
+# Leibniz: A Rule System for Math
 
 Author:	Anthony John Ripa
 
-Date:	2020.05.20
+Date:	2020.06.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -54,8 +53,10 @@ Live Demo of Version 23 at <a href='https://swish.swi-prolog.org/p/ywXZGtSr.pl'>
 
 Live Demo of Version 24 at <a href='https://swish.swi-prolog.org/p/nLRXyBmQ.pl'>https://swish.swi-prolog.org/p/nLRXyBmQ.pl</a>
 
-Leibniz
---------
+Live Demo of Version 25 at <a href='https://swish.swi-prolog.org/p/vERRvwXC.pl'>https://swish.swi-prolog.org/p/vERRvwXC.pl</a>
+
+## Leibniz
+
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
 
 Historically, applying the rules of algebra strictly to problems in Calculus has led to contradictions.
@@ -86,8 +87,8 @@ To expand on this, we might consider the problem of simplifying 0/0. If 0/0 is a
 
 Furthermore, if we are always going to return the canonical solution, we might as well save time and calculate a smaller parse tree. When calculating h/h@h=0, we might as well always simplify the expression to the left of the @ symbol first (in this case h/h simplifies to 1) then apply the @h=0 (in this case 1@h=0) to get the answer (in this case 1). This way we only return 0/0 when required (for example, if the input were literally 0/0, or if the input were something like 0/0@h=0).
 
-Semantics
----------
+## Semantics
+
 One way to think about the comparison between <code>Leibniz</code> and other approaches, is in terms of semantics. The term semantics is popular in the field of logic. To logicians, the term semantics is intended to mean something like the everyday word meaning. However, logicians' definition seems somewhat forced, and alternative interpretations seem needed. Nevertheless, the word can be used to refer to a practical distinction in logic. Sentences have two things about them that can be studied. One is their syntax. This is like the way the symbols are arranged in the sentence, and relates to the rules of arranging such symbols. The second is their semantics. This is the so-called meaning of the sentence. As an example, one can imagine the same sequence of symbols having one meaning in one language, and a different meaning in another language. This is the practical distinction that I want now.
 
 Consider x+x=2x. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. This semantics defers algebraic truths to arithmetic truths.
