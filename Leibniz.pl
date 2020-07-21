@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.06.20
+%	Date:		2020.07.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0400,fy,/).
@@ -108,11 +108,16 @@ go(N-D,Ans) :- show(('09',N-D)) , getsum([N,D],[N1,D1]) , subd(N1,D1,N0,D0) , fl
 go(N/D,Ans) :- show(('10',N/D)) , go(N,sum([H|T])) , go(D,D1) , go(H/D1,H1) , go(sum(T)/D1,T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('10',Ans)) , ! .
 go(fraction(N,D),Ans) :- show(('11',f(N/D))) , go(prod(N)/prod(D),Ans) , succ(('11',Ans)) , ! .
 go(traction(N,D),Ans) :- show(('12',f(N-D))) , go(sum(N)-sum(D),Ans) , succ(('12',Ans)) , ! .
-go(A@A=B,B) :- show(('13',A@A=B)) , succ(('13',B)) , ! .
-go(A@B=C,Ans) :- show(('14',A@B=C)) , go(A,sum([H|T])) , go(H@B=C,H1) , go(sum(T)@B=C,sum(T1)) , go(sum([H1|T1]),Ans) , succ(('14',Ans)) , ! .
-go(A@B=C,Ans) :- show(('15',A@B=C)) , go(A,prod([H|T])) , go(H@B=C,H1) , go(prod(T)@B=C,prod(T1)) , go(prod([H1|T1]),Ans) , succ(('15',Ans)) , ! .
-go(A@B,Ans) :- show(('16',A@B)) , go(A,Ans) , succ(('16',Ans)) , ! .
-go(X,X) :- show(('17',X)) , succ(('17',X)) , ! .
+go(A@X,Ans) :- show(('13',A@X)) , go0(A@X,G0) , (equal(G0,sum([])/sum([])) -> go1(A@X,Ans) ; Ans=G0) , succ(('13',Ans)) , ! .
+go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
+
+go0(A@X=Y,Ans) :- show(('g0',A@X=Y)) ,           replace(X,Y,A,Sub) , go(Sub,Ans) , succ(('g0',Ans)) , ! .
+go1(A@X=Y,Ans) :- show(('g1',A@X=Y)) , go(A,B) , replace(X,Y,B,Sub) , go(Sub,Ans) , succ(('g1',Ans)) , ! .
+
+isleaf(X) :- atomic(X) , ! .
+cna(C,N,A) :- compound_name_arguments(C,N,A) .
+replace(OldLeaf,NewLeaf,OldTree,NewTree) :- isleaf(OldTree) , (OldTree = OldLeaf -> NewTree = NewLeaf ; NewTree = OldTree) , ! .
+replace(OldLeaf,NewLeaf,OldTree,NewTree) :- cna(OldTree, Name, Args) , maplist(replace(OldLeaf,NewLeaf),Args,Args2) , cna(NewTree, Name, Args2) , ! .
 
 postpro(sum([]),0) :- shop(('01',sum([]))) , ! .
 postpro(sum([A]),AP) :- shop(('02',sum([A]))) , postpro(A,AP) , ! .
