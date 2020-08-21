@@ -1,9 +1,9 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.07.20
+%	Date:		2020.08.20
 %	Leibniz:	A Rule System for Math
 
-:- op(0400,fy,/).
+:- op(0600,fy,/).
 :- op(0700,fy,*).
 :- op(0800,xfx,@).
 :- op(0900,xfx,<-).
@@ -14,6 +14,9 @@
 :- dynamic see/0.
 
 if(Condition,Statement) :- Condition->Statement ; true .
+if(Condition,Statement1,Statement2) :- Condition->Statement1 ; Statement2 .
+if(Condition,Fun1,Fun2,Var) :- if(Condition,apply(Fun1,Var),apply(Fun2,Var)) .
+if(Condition,Fun1,Fun2,Var1,Var2) :- if(Condition,Fun1,Fun2,[Var1,Var2]) .
 
 shop(Text) :- if(see, (write('□ '),writeln(Text))) .
 show(Text) :- if(see, (write('. '),writeln(Text))) .
@@ -58,6 +61,11 @@ getsum(A,[A1]) :- flat(A,A1) , ! .
 
 equal(X,X) :- ! .
 equal(X,Y) :- go(X,Z) , ( Y=Z , ! ; go(Y,Z) ) , ! .
+
+is0(X) :- equal(X, sum([])		   ) , ! .
+is1(X) :- equal(X, prod([])		   ) , ! .
+nan(X) :- equal(X, sum([])/sum([]) ) , ! .
+ an(X) :- not(nan(X))				 , ! .
 
 take(E,[H|T],T) :- equal(E,H) , ! .
 take(E,[H|T],[H|T0]) :- take(E,T,T0) , ! .
@@ -108,13 +116,15 @@ go(N-D,Ans) :- show(('09',N-D)) , getsum([N,D],[N1,D1]) , subd(N1,D1,N0,D0) , fl
 go(N/D,Ans) :- show(('10',N/D)) , go(N,sum([H|T])) , go(D,D1) , go(H/D1,H1) , go(sum(T)/D1,T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('10',Ans)) , ! .
 go(fraction(N,D),Ans) :- show(('11',f(N/D))) , go(prod(N)/prod(D),Ans) , succ(('11',Ans)) , ! .
 go(traction(N,D),Ans) :- show(('12',f(N-D))) , go(sum(N)-sum(D),Ans) , succ(('12',Ans)) , ! .
-go(A@X,Ans) :- show(('13',A@X)) , go0(A@X,G0) , (equal(G0,sum([])/sum([])) -> go1(A@X,Ans) ; Ans=G0) , succ(('13',Ans)) , ! .
+go(A@X,Ans) :- show(('13',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('13',Ans)) , ! .
 go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
 
-go0(A@X=Y,Ans) :- show(('g0',A@X=Y)) ,           replace(X,Y,A,Sub) , go(Sub,Ans) , succ(('g0',Ans)) , ! .
-go1(A@X=Y,Ans) :- show(('g1',A@X=Y)) , go(A,B) , replace(X,Y,B,Sub) , go(Sub,Ans) , succ(('g1',Ans)) , ! .
+eval(A@X=Y,N,Ans):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), if(N=0,=,go,B,C) , replace(X,Y,C,Sub) , go(Sub,Ans) , succ(('ev',Ans)) , ! .
 
-isleaf(X) :- atomic(X) , ! .
+norder(exp(_),0,prod([])) :- ! .
+norder(exp(X),1,sum([prod([]),X])) :- ! .
+
+isleaf(X) :- ( atomic(X) ; X=exp(_) ) , ! .
 cna(C,N,A) :- compound_name_arguments(C,N,A) .
 replace(OldLeaf,NewLeaf,OldTree,NewTree) :- isleaf(OldTree) , (OldTree = OldLeaf -> NewTree = NewLeaf ; NewTree = OldTree) , ! .
 replace(OldLeaf,NewLeaf,OldTree,NewTree) :- cna(OldTree, Name, Args) , maplist(replace(OldLeaf,NewLeaf),Args,Args2) , cna(NewTree, Name, Args2) , ! .
@@ -131,7 +141,8 @@ postpro(A-B,AP-BP) :- shop(('09',A-B)) , postpro(A,AP) , postpro(B,BP) , ! .
 postpro(A/B,AP/BP) :- shop(('10',A/B)) , postpro(A,AP) , postpro(B,BP) , ! .
 postpro(fraction(A,B),AP/BP) :- shop(('11',A/B)) , postpro(prod(A),AP) , postpro(prod(B),BP) , ! .
 postpro(traction(A,B),AP-BP) :- shop(('12',A-B)) , postpro(sum(A),AP) , postpro(sum(B),BP) , ! .
-postpro(X,X) :- shop(('13',X)) , ! .
+postpro(exp(A),exp(AP)) :- shop(('13',exp(A))) , postpro(A,AP) , ! .
+postpro(X,X) :- shop(('14',X)) , ! .
 
 <----(Answer,X) :- if(not(see),assert(see)) , show("PreProcessing") , prepro(X,Answer) .	%	PreProcess
 <---(Answer,X) :- <----(P,X) , show("Simplifying") , go(P,Answer) .							%	Simplify

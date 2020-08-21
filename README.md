@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2020.07.20
+Date:	2020.08.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -56,6 +56,8 @@ Live Demo of Version 24 at <a href='https://swish.swi-prolog.org/p/nLRXyBmQ.pl'>
 Live Demo of Version 25 at <a href='https://swish.swi-prolog.org/p/vERRvwXC.pl'>https://swish.swi-prolog.org/p/vERRvwXC.pl</a>
 
 Live Demo of Version 26 at <a href='https://swish.swi-prolog.org/p/YnEhbMPB.pl'>https://swish.swi-prolog.org/p/YnEhbMPB.pl</a>
+
+Live Demo of Version 27 at <a href='https://swish.swi-prolog.org/p/VYojppKx.pl'>https://swish.swi-prolog.org/p/VYojppKx.pl</a>
 
 ## Leibniz
 
@@ -138,3 +140,7 @@ The semantics of arithmetic is something of a foundation. The semantics of norma
 One reason to think that we may have gotten it backwards is by thinking about number and quantity. Numbers are things like 5 or 7. Numbers are particular quantities. In normal algebra, we have variables. We think of them as varying over different numbers. Variables vary over particular quantities. The notion of not being a particular quantity is constructed as varying over particular quantities. This does not quite capture the notion of not being particular. This construction leads to confusions about things like x/x. Instead, we may think of a generic quantity. This generic quantity is not standing in for particular quantities. Generic quantities are not generic particular quantities. The particularity fails to help, and helps to fail. The generic quantity is just that: a quantity. It may have a name, like x. However, this does not make it particular. Furthermore, the rules of how to manipulate quantities that are not particular, is not constrained by the rules of how to manipulate quantities that are particular.
 
 In the alternative, rather than changing the semantics of algebra, we can change the semantics of arithmetic. Earlier, we spoke about parsing x/x@x=0. We can parse it  as (x@x=0)/(x@x=0) then 0/0. We can parse it as 1@x=0 then 1. In this 2 branch tree we avoid the 0/0 branch to get 1. We formalized this at one point with directional parses → instead of bidirectional =. We could try fixing arithmetic this way then basing algebra on it. 1 → 0/0 and 0 → 0/0 but not 0/0 → something. Perhaps, it is not entirely important if we fix algebra, and then base arithmetic on the fixed algebra, or if we fix arithmetic and base algebra on the new arithmetic. It is important that we fix. We could also fix both and merely have them compatible, and perhaps interderivable without the need of declaring one as the foundation.
+
+## Transcendental
+
+Transcendentals transcend polynomials. exp(x) = 1 + h + h^2/2 + … . It is the … that makes it transcendental. Attempting to compute with this transcendent object can be daunting. I may want to simplify (exp(h)–1)/h@h=0 = (1 + h + h^2/2 + … – 1)/h@h=0 = (h + h^2/2 + …)/h@h=0 = (1 + h/2 + …)@h=0 = 1 . Getting the computer to allow computation with … can be challenging. One satisfying resolution is to try partial sums until it works. (exp(h)–1)/h@h=0 = (1 – 1)/h@h=0 = 0/h@h=0 = 0/0 . Retry. (exp(h)–1)/h@h=0 = (1 + h – 1)/h@h=0 = h/h@h=0 = 1@h=0 = 1 . Success. This is not unlike, and somehow identical to L'Hopital's rule. First try Limit of 0ᵗʰ Derivative of Numerator & Denominator (1–1)/0 = 0/0. Retry. Limit of 1ˢᵗ Derivative of Numerator & Denominator 1/1 = 1. Success. The resemblance is eerie. If for some reason you are partial to Calculus you may model the Algebraic approach using Calculus. If for some reason you are partial to Algebra you may model the Calculus approach using Algebra. If you are impartial you may intermodel. One benefit of having the Algebra as the base is that Algebra is simpler and easier to understand, and Occam's razor may prefer the simpler model, if you are partial to simple models.
