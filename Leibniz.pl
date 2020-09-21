@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.08.20
+%	Date:		2020.09.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0600,fy,/).
@@ -15,8 +15,6 @@
 
 if(Condition,Statement) :- Condition->Statement ; true .
 if(Condition,Statement1,Statement2) :- Condition->Statement1 ; Statement2 .
-if(Condition,Fun1,Fun2,Var) :- if(Condition,apply(Fun1,Var),apply(Fun2,Var)) .
-if(Condition,Fun1,Fun2,Var1,Var2) :- if(Condition,Fun1,Fun2,[Var1,Var2]) .
 
 shop(Text) :- if(see, (write('□ '),writeln(Text))) .
 show(Text) :- if(see, (write('. '),writeln(Text))) .
@@ -34,7 +32,8 @@ prepro(+A,Ans) :- shop(('09',+A)) , prepro(A,Ans) , ! .
 prepro(*A,Ans) :- shop(('10',*A)) , prepro(A,Ans) , ! .
 prepro(-A,Ans) :- shop(('11',-A)) , prepro(A,AP) , getsum(AP,AL) , prepro(traction([],AL),Ans) , ! .
 prepro(/A,Ans) :- shop(('12',/A)) , prepro(A,AP) , getprod(AP,AL) , prepro(fraction([],AL),Ans) , ! .
-prepro(X,Ans) :- shop(('13',X)) , flat(X,Ans) , ! .
+prepro(exp(X+Y),prod([exp(X),exp(Y)])) :- shop(('13',f(X))) , ! .
+prepro(X,Ans) :- shop(('14',X)) , flat(X,Ans) , ! .
 
 flat(prod([H]),Ans) :- flat(H,Ans) , ! .
 flat(sum([H]),Ans) :- flat(H,Ans) , ! .
@@ -101,6 +100,7 @@ factors(prod(F),F) :- ! .
 factors(sum([F]),A) :- factors(F,A) , ! .
 factors(sum(S),[prod(D1),sum(N3)]) :- maplist(factors,S,N1) , reduce(multi_intersect,N1,D1) , maplist(multi_diff(D1),N1,N2) , bagof(prod(X),member(X,N2),N3) , ! .
 factors(traction(X,Y),[prod(I),traction([prod(X2)],[prod(Y2)])]) :- factors(sum(X),X1),factors(sum(Y),Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
+factors(exp(X),[exp(X)]) :- ! .
 
 factor(E,A) :- factors(E,F) , flat(prod(F),A) , ! .
 
@@ -119,7 +119,7 @@ go(traction(N,D),Ans) :- show(('12',f(N-D))) , go(sum(N)-sum(D),Ans) , succ(('12
 go(A@X,Ans) :- show(('13',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('13',Ans)) , ! .
 go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
 
-eval(A@X=Y,N,Ans):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), if(N=0,=,go,B,C) , replace(X,Y,C,Sub) , go(Sub,Ans) , succ(('ev',Ans)) , ! .
+eval(A@X=Y,N,Ans):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), if(N=0,B=C,go(B,C)) , replace(X,Y,C,Sub) , go(Sub,Ans) , succ(('ev',Ans)) , ! .
 
 norder(exp(_),0,prod([])) :- ! .
 norder(exp(X),1,sum([prod([]),X])) :- ! .
