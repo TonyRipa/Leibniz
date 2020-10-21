@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.09.20
+%	Date:		2020.10.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0600,fy,/).
@@ -61,9 +61,9 @@ getsum(A,[A1]) :- flat(A,A1) , ! .
 equal(X,X) :- ! .
 equal(X,Y) :- go(X,Z) , ( Y=Z , ! ; go(Y,Z) ) , ! .
 
-is0(X) :- equal(X, sum([])		   ) , ! .
+is0(X) :- equal(X, sum([]) ) ; equal(X, traction([],[]) ) .
 is1(X) :- equal(X, prod([])		   ) , ! .
-nan(X) :- equal(X, sum([])/sum([]) ) , ! .
+nan(X) :- =(X, sum([])/sum([]) ) , ! .
  an(X) :- not(nan(X))				 , ! .
 
 take(E,[H|T],T) :- equal(E,H) , ! .
@@ -105,19 +105,16 @@ factors(exp(X),[exp(X)]) :- ! .
 factor(E,A) :- factors(E,F) , flat(prod(F),A) , ! .
 
 go(prod(L),Ans) :- show(('01',prod(L))) , maplist(go,L,S) , flat(prod(S),F) , prod(L)\=F , go(F,Ans) , succ(('01',Ans)) , ! .
-go(prod(L),sum([])) :- show(('02',prod([sum([])]))) , member(sum([]),L) , succ(('02',sum([]))) , ! .
+go(prod(L),sum([])) :- show(('02',prod([sum([])]))) , is0(Zero) , member(Zero,L) , succ(('02',sum([]))) , ! .
 go(sum([H|T]),Ans) :- show(('03',sum([H|T]))) , go(H,HS) , go(sum(T),TS) , getsum(HS,HL) , getsum(TS,TL) , append(HL,TL,LS) , Ans=sum(LS) , succ(('03',Ans)) , ! .
-go(A-B,Ans) :- show(('04',A-B)) , expandf(A,A0) , getsum(A0,A1) , expandf(B,B0) , getsum(B0,[B1]) , select(B1,A1,L) , go(sum(L),Ans) , succ(('04',Ans)) , ! .
-go(N-Zero,Ans) :- show(('05',N-Zero)) , equal(Zero,sum([])) , go(N,Ans) , succ(('05',Ans)) , ! .
-go(N/One,Ans) :- show(('06',N/One)) , equal(One,prod([])) , go(N,Ans) , succ(('06',Ans)) , ! .
-go(Zero/D,Ans) :- show(('07',Zero/D)) , equal(Zero,sum([])) , ( equal(D,sum([])) -> Ans=sum([])/sum([]) ; Ans=sum([]) ) , succ(('07',Ans)) , ! .
-go(N/D,Ans) :- show(('08',N/D)) , factor(N,F) , getprod([F,D],[N1,D1]) , subd(N1,D1,N0,D0) , flat([prod(N0),prod(D0)],[A,B]) , go(A/B,Ans) , succ(('08',Ans)) , ! .
-go(N-D,Ans) :- show(('09',N-D)) , getsum([N,D],[N1,D1]) , subd(N1,D1,N0,D0) , flat([sum(N0),sum(D0)],[N2,D2]) , go(N2-D2,Ans) , succ(('09',Ans)) , ! .
-go(N/D,Ans) :- show(('10',N/D)) , go(N,sum([H|T])) , go(D,D1) , go(H/D1,H1) , go(sum(T)/D1,T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('10',Ans)) , ! .
-go(fraction(N,D),Ans) :- show(('11',f(N/D))) , go(prod(N)/prod(D),Ans) , succ(('11',Ans)) , ! .
-go(traction(N,D),Ans) :- show(('12',f(N-D))) , go(sum(N)-sum(D),Ans) , succ(('12',Ans)) , ! .
-go(A@X,Ans) :- show(('13',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('13',Ans)) , ! .
-go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
+go(traction(A,B),Ans) :- show(('04',traction(A,B))) , expandf(sum(A),A0) , getsum(A0,A1) , expandf(sum(B),B0) , getsum(B0,[B1]) , select(B1,A1,L) , go(sum(L),Ans) , succ(('04',Ans)) , ! .
+go(fraction(N,One),Ans) :- show(('05',fraction(N,One))) , is1(prod(One)) , go(prod(N),Ans) , succ(('05',Ans)) , ! .
+go(fraction(Zero,[D]),Ans) :- show(('06',fraction(Zero,D))) , is0(prod(Zero)) , ( is0(D) -> nan(Ans) ; Ans=sum([]) ) , succ(('06',Ans)) , ! .
+go(fraction(N,D),Ans) :- show(('07',fraction(N,D))) , factor(prod(N),F) , getprod([F,prod(D)],[N1,D1])    , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(fraction(N3,D3),Ans) , succ(('07',Ans)) , ! .
+go(traction(N,D),Ans) :- show(('08',traction(N,D))) ,                     getsum([sum(N),sum(D)],[N1,D1]) , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(traction(N3,D3),Ans) , succ(('08',Ans)) , ! .
+go(fraction([N],[D]),Ans) :- show(('09',fraction(N,D))) , go(N,sum([H|T])) , go(D,D1) , go(fraction([H],[D1]),H1) , go(fraction([sum(T)],[D1]),T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('09',Ans)) , ! .
+go(A@X,Ans) :- show(('10',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('10',Ans)) , ! .
+go(X,X) :- show(('11',X)) , succ(('11',X)) , ! .
 
 eval(A@X=Y,N,Ans):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), if(N=0,B=C,go(B,C)) , replace(X,Y,C,Sub) , go(Sub,Ans) , succ(('ev',Ans)) , ! .
 
@@ -140,9 +137,12 @@ postpro(A-B,Ans) :- shop(('08',A-B)) , postpro(A,0) , postpro(B,BP) , postpro(-B
 postpro(A-B,AP-BP) :- shop(('09',A-B)) , postpro(A,AP) , postpro(B,BP) , ! .
 postpro(A/B,AP/BP) :- shop(('10',A/B)) , postpro(A,AP) , postpro(B,BP) , ! .
 postpro(fraction(A,B),AP/BP) :- shop(('11',A/B)) , postpro(prod(A),AP) , postpro(prod(B),BP) , ! .
-postpro(traction(A,B),AP-BP) :- shop(('12',A-B)) , postpro(sum(A),AP) , postpro(sum(B),BP) , ! .
-postpro(exp(A),exp(AP)) :- shop(('13',exp(A))) , postpro(A,AP) , ! .
-postpro(X,X) :- shop(('14',X)) , ! .
+postpro(traction(A,[]),AP) :- shop(('12',A-0)) , postpro( sum(A),AP) , ! .
+postpro(traction([],A),Ans) :- shop(('13',0-A)) , postpro(sum(A),AP) , number(AP) , is(Ans,-AP) , ! .
+postpro(traction([],A),-(AP)) :- shop(('14',0-A)) , postpro(sum(A),AP) , ! .
+postpro(traction(A,B),AP-BP) :- shop(('15',A-B)) , postpro(sum(A),AP) , postpro(sum(B),BP) , ! .
+postpro(exp(A),exp(AP)) :- shop(('16',exp(A))) , postpro(A,AP) , ! .
+postpro(X,X) :- shop(('17',X)) , ! .
 
 <----(Answer,X) :- if(not(see),assert(see)) , show("PreProcessing") , prepro(X,Answer) .	%	PreProcess
 <---(Answer,X) :- <----(P,X) , show("Simplifying") , go(P,Answer) .							%	Simplify
