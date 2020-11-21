@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2020.10.20
+Date:	2020.11.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -63,6 +63,8 @@ Live Demo of Version 28 at <a href='https://swish.swi-prolog.org/p/EoLuOJTT.pl'>
 
 Live Demo of Version 29 at <a href='https://swish.swi-prolog.org/p/vxZoBHOU.pl'>https://swish.swi-prolog.org/p/vxZoBHOU.pl</a>
 
+Live Demo of Version 30 at <a href='https://swish.swi-prolog.org/p/fKEQsrdU.pl'>https://swish.swi-prolog.org/p/fKEQsrdU.pl</a>
+
 ## Leibniz
 
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
@@ -99,9 +101,13 @@ Furthermore, if we are always going to return the canonical solution, we might a
 
 One way to think about the comparison between <code>Leibniz</code> and other approaches, is in terms of semantics. The term semantics is popular in the field of logic. To logicians, the term semantics is intended to mean something like the everyday word meaning. However, logicians' definition seems somewhat forced, and alternative interpretations seem needed. Nevertheless, the word can be used to refer to a practical distinction in logic. Sentences have two things about them that can be studied. One is their syntax. This is like the way the symbols are arranged in the sentence, and relates to the rules of arranging such symbols. The second is their semantics. This is the so-called meaning of the sentence. As an example, one can imagine the same sequence of symbols having one meaning in one language, and a different meaning in another language. This is the practical distinction that I want now.
 
+### Extensional Semantics
+
 Consider x+x=2x. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. This semantics defers algebraic truths to arithmetic truths.
 
 Consider x/x=1. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. Under that semantics you try many numbers and it works. However, if you try 0 then you get 0/0=1. This is not unambiguously true in normal arithmetic. Therefore, x/x=1 is not unambiguously true in normal algebra.
+
+### Non-Extensional Semantics
 
 Let us now consider an alternate semantics. This semantics will not defer to arithmetic for its meaning. This semantics will ground its meaning directly in generic quantities. Consider x+x=2x. This is true because whenever I add a thing to itself, then I have 2 of that thing. So, x+x=2x is true. That's the argument. It is not deferred to arithmetic to check, because that is not what is meant with this new semantics. Consider x/x=1. How many quantities per quantity do we have? Well, 1. So x/x=1. This statement is judged true.
 

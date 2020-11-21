@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2020.10.20
+%	Date:		2020.11.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0600,fy,/).
@@ -32,8 +32,9 @@ prepro(+A,Ans) :- shop(('09',+A)) , prepro(A,Ans) , ! .
 prepro(*A,Ans) :- shop(('10',*A)) , prepro(A,Ans) , ! .
 prepro(-A,Ans) :- shop(('11',-A)) , prepro(A,AP) , getsum(AP,AL) , prepro(traction([],AL),Ans) , ! .
 prepro(/A,Ans) :- shop(('12',/A)) , prepro(A,AP) , getprod(AP,AL) , prepro(fraction([],AL),Ans) , ! .
-prepro(exp(X+Y),prod([exp(X),exp(Y)])) :- shop(('13',f(X))) , ! .
-prepro(X,Ans) :- shop(('14',X)) , flat(X,Ans) , ! .
+prepro(exp(X+Y+Z),prod([exp(X),exp(Y),exp(Z)])) :- shop(('13',f(X))) , ! .
+prepro(exp(X+Y),prod([exp(X),exp(Y)])) :- shop(('14',f(X))) , ! .
+prepro(X,Ans) :- shop(('15',X)) , flat(X,Ans) , ! .
 
 flat(prod([H]),Ans) :- flat(H,Ans) , ! .
 flat(sum([H]),Ans) :- flat(H,Ans) , ! .
@@ -43,8 +44,16 @@ flat(sum(L),Ans) :- select(sum(A),L,L2) , append(A,L2,L3) , flat(sum(L3),Ans) , 
 flat(sum(L),Ans) :- select(traction(A,B),L,L2) , append(A,L2,L3) , flat(traction(L3,B),Ans) , ! .
 flat(prod(L),prod(L2)) :- maplist(flat,L,L2) , ! .
 flat(sum(L),sum(L2)) :- maplist(flat,L,L2) , ! .
+flat(fraction([N],[]),Ans) :- flat(N,Ans) , ! .
+flat(traction([N],[]),Ans) :- flat(N,Ans) , ! .
+flat(fraction(N,D),Ans) :- select(prod(A),N,N2) , append(A,N2,N3) , flat(fraction(N3,D),Ans) , ! .
+flat(traction(N,D),Ans) :- select(sum(A),N,N2) , append(A,N2,N3) , flat(traction(N3,D),Ans) , ! .
+flat(traction(N,D),Ans) :- select(sum(A),D,D2) , append(A,D2,D3) , flat(traction(N,D3),Ans) , ! .
 flat(fraction(N,D),Ans) :- select(fraction(A,B),N,N2) , append(A,N2,N3) , append(B,D,D2) , flat(fraction(N3,D2),Ans) , ! .
 flat(fraction(N,D),Ans) :- select(fraction(A,B),D,D2) , append(A,D2,D3) , append(B,N,N2) , flat(fraction(N2,D3),Ans) , ! .
+flat(fraction(N,D),Ans) :- select(traction(A,B),N,N2) , flat(traction(A,B),T) , traction(A,B) \= T , append([T],N2,N3) , flat(fraction(N3,D),Ans) , ! .
+flat(traction(N,D),Ans) :- select(prod(A),N,N2) , flat(prod(A),A2) , prod(A) \= A2 , append([A2],N2,N3) , flat(traction(N3,D),Ans) , ! .
+flat(traction(N,D),Ans) :- select(prod(A),D,D2) , flat(prod(A),A2) , prod(A) \= A2 , append([A2],D2,D3) , flat(traction(N,D3),Ans) , ! .
 flat(traction(N,D),Ans) :- select(traction(A,B),N,N2) , append(A,N2,N3) , append(B,D,D2) , flat(traction(N3,D2),Ans) , ! .
 flat(traction(N,D),Ans) :- select(traction(A,B),D,D2) , append(A,D2,D3) , append(B,N,N2) , flat(traction(N2,D3),Ans) , ! .
 flat(L,Ans) :- maplist(flat,L,Ans) , ! .
@@ -78,6 +87,7 @@ subd(N1,D1,N0,D0) :- sub(N1,D1,N0,D0) , N1\=N0 , ! .
 expandf(X,Ans) :- expand(X,E) , flat(E,Ans) , ! .
 expand(sum(L),sum(EL)) :- maplist(expand,L,EL) , ! .
 expand(prod(L),Ans) :- append(Front,[sum(S)|Back],L) , append(Front,Back,L2) , expand1(sum(S),prod(L2),E1) , expand(E1,Ans) , ! .
+expand(traction(A,B),traction(EA,EB)) :- maplist(expand,A,EA) , maplist(expand,B,EB) , ! .
 expand(X,X) :- ! .
 expand1(sum([]),prod(_),sum([])) :- ! .
 expand1(sum([SH|ST]),prod(P),sum(E)) :- append([SH],P,EH) , expand1(sum(ST),prod(P),sum(ET)) , append([prod(EH)],ET,E) , ! .
@@ -104,17 +114,20 @@ factors(exp(X),[exp(X)]) :- ! .
 
 factor(E,A) :- factors(E,F) , flat(prod(F),A) , ! .
 
-go(prod(L),Ans) :- show(('01',prod(L))) , maplist(go,L,S) , flat(prod(S),F) , prod(L)\=F , go(F,Ans) , succ(('01',Ans)) , ! .
-go(prod(L),sum([])) :- show(('02',prod([sum([])]))) , is0(Zero) , member(Zero,L) , succ(('02',sum([]))) , ! .
-go(sum([H|T]),Ans) :- show(('03',sum([H|T]))) , go(H,HS) , go(sum(T),TS) , getsum(HS,HL) , getsum(TS,TL) , append(HL,TL,LS) , Ans=sum(LS) , succ(('03',Ans)) , ! .
-go(traction(A,B),Ans) :- show(('04',traction(A,B))) , expandf(sum(A),A0) , getsum(A0,A1) , expandf(sum(B),B0) , getsum(B0,[B1]) , select(B1,A1,L) , go(sum(L),Ans) , succ(('04',Ans)) , ! .
-go(fraction(N,One),Ans) :- show(('05',fraction(N,One))) , is1(prod(One)) , go(prod(N),Ans) , succ(('05',Ans)) , ! .
-go(fraction(Zero,[D]),Ans) :- show(('06',fraction(Zero,D))) , is0(prod(Zero)) , ( is0(D) -> nan(Ans) ; Ans=sum([]) ) , succ(('06',Ans)) , ! .
-go(fraction(N,D),Ans) :- show(('07',fraction(N,D))) , factor(prod(N),F) , getprod([F,prod(D)],[N1,D1])    , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(fraction(N3,D3),Ans) , succ(('07',Ans)) , ! .
-go(traction(N,D),Ans) :- show(('08',traction(N,D))) ,                     getsum([sum(N),sum(D)],[N1,D1]) , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(traction(N3,D3),Ans) , succ(('08',Ans)) , ! .
-go(fraction([N],[D]),Ans) :- show(('09',fraction(N,D))) , go(N,sum([H|T])) , go(D,D1) , go(fraction([H],[D1]),H1) , go(fraction([sum(T)],[D1]),T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('09',Ans)) , ! .
-go(A@X,Ans) :- show(('10',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('10',Ans)) , ! .
-go(X,X) :- show(('11',X)) , succ(('11',X)) , ! .
+go(traction(A,B),Ans) :- show(('01',traction(A,B))) , flat(traction(A,B),T) , traction(A,B)\=T , go(T,Ans) , succ(('01',Ans)) , ! .
+go(fraction(A,B),Ans) :- show(('02',fraction(A,B))) , flat(fraction(A,B),F) , fraction(A,B)\=F , go(F,Ans) , succ(('02',Ans)) , ! .
+go(prod(L),Ans) :- show(('03',prod(L))) , maplist(go,L,S) , flat(prod(S),F) , prod(L)\=F , go(F,Ans) , succ(('03',Ans)) , ! .
+go(prod(L),sum([])) :- show(('04',prod([sum([])]))) , is0(Zero) , member(Zero,L) , succ(('04',sum([]))) , ! .
+go(sum([H|T]),Ans) :- show(('05',sum([H|T]))) , go(H,HS) , go(sum(T),TS) , getsum(HS,HL) , getsum(TS,TL) , append(HL,TL,LS) , Ans=sum(LS) , succ(('05',Ans)) , ! .
+go(traction(A,B),Ans) :- show(('06',traction(A,B))) , expandf(sum(A),A0) , getsum(A0,A1) , expandf(sum(B),B0) , getsum(B0,[B1]) , select(B1,A1,L) , go(sum(L),Ans) , succ(('06',Ans)) , ! .
+go(fraction(N,One),Ans) :- show(('07',fraction(N,One))) , is1(prod(One)) , go(prod(N),Ans) , succ(('07',Ans)) , ! .
+go(fraction(Zero,D),Ans) :- show(('08',fraction(Zero,D))) , is0(prod(Zero)) , ( is0(prod(D)) -> nan(Ans) ; Ans=sum([]) ) , succ(('08',Ans)) , ! .
+go(fraction(N,D),Ans) :- show(('09',fraction(N,D))) , factor(prod(N),F) , getprod([F,prod(D)],[N1,D1])    , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(fraction(N3,D3),Ans) , succ(('09',Ans)) , ! .
+go(fraction(N,D),Ans) :- show(('10',fraction(N,D))) , go(prod(N),S) , expandf(S,E) , go(E,G) , factor(G,F) , getprod([F,prod(D)],[N1,D1])    , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(fraction(N3,D3),Ans) , succ(('10',Ans)) , ! .
+go(traction(N,D),Ans) :- show(('11',traction(N,D))) ,                     getsum([sum(N),sum(D)],[N1,D1]) , subd(N1,D1,N2,D2) , flat([N2,D2],[N3,D3]) , go(traction(N3,D3),Ans) , succ(('11',Ans)) , ! .
+go(fraction([N],[D]),Ans) :- show(('12',fraction(N,D))) , go(N,sum([H|T])) , go(D,D1) , go(fraction([H],[D1]),H1) , go(fraction([sum(T)],[D1]),T0) , getsum(T0,T1) , go(sum([H1|T1]),Ans) , succ(('12',Ans)) , ! .
+go(A@X,Ans) :- show(('13',A@X)) , member(N,[0,1]) , eval(A@X,N,Ans) , an(Ans) , succ(('13',Ans)) , ! .
+go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
 
 eval(A@X=Y,N,Ans):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), if(N=0,B=C,go(B,C)) , replace(X,Y,C,Sub) , go(Sub,Ans) , succ(('ev',Ans)) , ! .
 
