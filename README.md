@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2020.11.20
+Date:	2020.12.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -64,6 +64,8 @@ Live Demo of Version 28 at <a href='https://swish.swi-prolog.org/p/EoLuOJTT.pl'>
 Live Demo of Version 29 at <a href='https://swish.swi-prolog.org/p/vxZoBHOU.pl'>https://swish.swi-prolog.org/p/vxZoBHOU.pl</a>
 
 Live Demo of Version 30 at <a href='https://swish.swi-prolog.org/p/fKEQsrdU.pl'>https://swish.swi-prolog.org/p/fKEQsrdU.pl</a>
+
+Live Demo of Version 31 at <a href='https://swish.swi-prolog.org/p/cAhQaWug.pl'>https://swish.swi-prolog.org/p/cAhQaWug.pl</a>
 
 ## Leibniz
 
@@ -153,4 +155,8 @@ In the alternative, rather than changing the semantics of algebra, we can change
 
 ## Transcendental
 
-Transcendentals transcend polynomials. exp(x) = 1 + h + h^2/2 + … . It is the … that makes it transcendental. Attempting to compute with this transcendent object can be daunting. I may want to simplify (exp(h)–1)/h@h=0 = (1 + h + h^2/2 + … – 1)/h@h=0 = (h + h^2/2 + …)/h@h=0 = (1 + h/2 + …)@h=0 = 1 . Getting the computer to allow computation with … can be challenging. One satisfying resolution is to try partial sums until it works. (exp(h)–1)/h@h=0 = (1 – 1)/h@h=0 = 0/h@h=0 = 0/0 . Retry. (exp(h)–1)/h@h=0 = (1 + h – 1)/h@h=0 = h/h@h=0 = 1@h=0 = 1 . Success. This is not unlike, and somehow identical to L'Hopital's rule. First try Limit of 0ᵗʰ Derivative of Numerator & Denominator (1–1)/0 = 0/0. Retry. Limit of 1ˢᵗ Derivative of Numerator & Denominator 1/1 = 1. Success. The resemblance is eerie. If for some reason you are partial to Calculus you may model the Algebraic approach using Calculus. If for some reason you are partial to Algebra you may model the Calculus approach using Algebra. If you are impartial you may intermodel. One benefit of having the Algebra as the base is that Algebra is simpler and easier to understand, and Occam's razor may prefer the simpler model, if you are partial to simple models.
+Transcendentals transcend polynomials. exp(x) = 1 + h + h^2/2 + … . It is the … that makes it transcendental. Attempting to compute with this transcendent object can be daunting. I may want to simplify (exp(h)–1)/h@h=0 = (1 + h + h^2/2 + … – 1)/h@h=0 = (h + h^2/2 + …)/h@h=0 = (1 + h/2 + …)@h=0 = 1 . Getting the computer to allow computation with … can be challenging. One satisfying resolution is to try partial sums until it works. (exp(h)–1)/h@h=0 = (1 – 1)/h@h=0 = 0/h@h=0 = 0/0 . Retry. (exp(h)–1)/h@h=0 = (1 + h – 1)/h@h=0 = h/h@h=0 = 1@h=0 = 1 . Success. This is not unlike, and somehow identical to L'Hopital's rule. First try Limit of 0ᵗʰ Derivative of Numerator & Denominator (1–1)/0 = 0/0. Retry. Limit of 1ˢᵗ Derivative of Numerator & Denominator 1/1 = 1. Success. The resemblance to L'Hopital's rule is eerie.
+
+To be absolutely safe, in place of the … we may be better off keeping around an error term (like O(h^2)). That way we can make sure that the error term is small compared to a possible divisor, or Retry when it's not.
+
+If for some reason you are partial to Calculus you may model the Algebraic approach using Calculus. If for some reason you are partial to Algebra you may model the Calculus approach using Algebra. If you are impartial you may intermodel. One benefit of having the Algebra as the base is that Algebra is simpler and easier to understand, and Occam's razor may prefer the simpler model, if you are partial to simple models.
