@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2020.12.20
+Date:	2021.1.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -66,6 +66,8 @@ Live Demo of Version 29 at <a href='https://swish.swi-prolog.org/p/vxZoBHOU.pl'>
 Live Demo of Version 30 at <a href='https://swish.swi-prolog.org/p/fKEQsrdU.pl'>https://swish.swi-prolog.org/p/fKEQsrdU.pl</a>
 
 Live Demo of Version 31 at <a href='https://swish.swi-prolog.org/p/cAhQaWug.pl'>https://swish.swi-prolog.org/p/cAhQaWug.pl</a>
+
+Live Demo of Version 32 at <a href='https://swish.swi-prolog.org/p/phGOgCOY.pl'>https://swish.swi-prolog.org/p/phGOgCOY.pl</a>
 
 ## Leibniz
 
