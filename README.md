@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2021.02.20
+Date:	2021.03.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -70,6 +70,8 @@ Live Demo of Version 31 at <a href='https://swish.swi-prolog.org/p/cAhQaWug.pl'>
 Live Demo of Version 32 at <a href='https://swish.swi-prolog.org/p/phGOgCOY.pl'>https://swish.swi-prolog.org/p/phGOgCOY.pl</a>
 
 Live Demo of Version 33 at <a href='https://swish.swi-prolog.org/p/PriFIpMa.pl'>https://swish.swi-prolog.org/p/PriFIpMa.pl</a>
+
+Live Demo of Version 34 at <a href='https://swish.swi-prolog.org/p/NOdHjmYT.pl'>https://swish.swi-prolog.org/p/NOdHjmYT.pl</a>
 
 ## Leibniz
 
@@ -164,3 +166,21 @@ Transcendentals transcend polynomials. exp(x) = 1 + h + h^2/2 + … . It is the 
 To be absolutely safe, in place of the … we may be better off keeping around an error term (like O(h^2)). That way we can make sure that the error term is small compared to a possible divisor, or Retry when it's not.
 
 If for some reason you are partial to Calculus you may model the Algebraic approach using Calculus. If for some reason you are partial to Algebra you may model the Calculus approach using Algebra. If you are impartial you may intermodel. One benefit of having the Algebra as the base is that Algebra is simpler and easier to understand, and Occam's razor may prefer the simpler model, if you are partial to simple models.
+
+## Functions
+
+### Evaluation
+
+In Algebra textbooks, we often see expressions like x*h|ₓ₌₂.  This is read "x*h evaluated at x=2".  This means take the expression x*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
+
+### Order of Operations
+
+How should we group the parts of "x*h evaluated at x=2"? Grouping like "(x*h) evaluated at (x=2)" has some merits.  One is that the left is an expression, and the right is a substitution.  This can be framed in terms of order of operations.  In x*h|ₓ₌₂ what operator has the highest precedence?  If following the previous suggestion then it is |.
+
+### Functions
+
+<code>Leibniz</code> has adopted a new order of operations, specifically to accommodate functions, in as natural a way as possible. Instead of having @ as the highest priority, = is given the highest priority. Instead of x*h@x=2 being parenthesized like (x*h)@(x=2), it is parenthesized like (x*h@x)=2.  This may look odd.  (x*h)@(x=2) looks like "(x*h) evaluated at (x=2)". (x*h@x)=2 looks like "(x*h evaluated at x) equals 2". Seemingly nonsensical. However, in the expression x*h|ₓ₌₂ the = was never really an equal (e.g. it was never symmetric). A better reading may be "x*h substitute x with 2". So, | is substitute. The = is with. So, (x*h)@(x=2) means "(x*h) substitute (x with 2)". While (x*h@x)=2 should read "(x*h substitute x) with 2".  This is at least a minor improvement.  It looks somewhat like a partial application.  The "x*h substitute x" does seem to leave something hanging (like the other shoe to drop).  This may be seen as the nature of a function.  A function is a reification of part of a computation.  In x*h@x=2, the x*h@x is a function.  This is not dissimilar to the relatively familiar arrow notation (e.g. C++'s => or Java's ->) for a function.  A notation like x↦x*h means a function with argument x and returns x*h.  We could easily imagine a backward arrow x*h↤x means a function with argument x and returns x*h.  <code>Leibniz</code>'s @ is like ↤.
+
+We may reuse functions by assigning (unifying) them to a Prolog variable (notated using capital letters).  Then later we may use that variable anywhere that we want that function.  Some care need be taken. In making an assignment (really a unification) Prolog uses the = symbol.  In this context, the = is a predicate (something that is true or false).  We also use the = symbol inside an expression.  In this context the = symbol is a functor.  A danger is that incorrect usage, instead of throwing an error message, may result in a functor being interpreted as a predicate, or vice-versa.  This can lead to silent logic errors that are hard to debug.  This is not unlike assignment expressions in c, where if we write "if (x=0)" instead of "if (x==0)" then we get no warning, because in c "x=0" is somewhat unintuitively also an expression.  In the future, to avoid these kinds of problems, we may want to change <code>Leibniz</code>'s syntax.  Instead of writing x*h@x=2, we may prefer x*h@x←2 or similar.
+
+In the spirit of purism, we also have the option of reusable functions, without relying additional language features (like Prolog variables).  How?  Well, with functions we already have the facility of replacement.  Instead of rewriting the same function in multiple places in the same expression, we may instead write a generic there.  Then we evaluate the entire expression substituting the generic with a function.  This way we only write the function once.  And we didn't have to rely on any new language features to support this.

@@ -1,14 +1,15 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.02.20
+%	Date:		2021.03.20
 %	Leibniz:	A Rule System for Math
 
-:- op(0300,xfx,:).
-:- op(0400,fy,s).
-:- op(0500,fy,p).
-:- op(0600,fy,/).
-:- op(0700,fy,*).
-:- op(0800,xfx,@).
+:- op(0100,xfx,:).
+:- op(0150,fy,s).
+:- op(0200,fy,p).
+:- op(0250,fy,/).
+:- op(0300,fy,*).
+:- op(0425,xfx,@).
+:- op(0450,xfx,=).
 :- op(0900,xfx,<-).
 :- op(1000,xfx,<--).
 :- op(1100,xfx,<---).
@@ -18,6 +19,7 @@
 
 if(Condition,Statement) :- Condition->Statement ; true .
 if(Condition,Statement1,Statement2) :- Condition->Statement1 ; Statement2 .
+if(Condition,Fun1,Fun2,Var) :- if(Condition,apply(Fun1,Var),apply(Fun2,Var)) .
 
 shop(Text) :- if(see, (write('□ '),writeln(Text)) ) .
 show(Text) :- if(see, (write('. '),writeln(Text)) ) .
@@ -110,8 +112,9 @@ go(p L:[],Ans) :- show(('04',p L:[])) , is0(Zero) , mem(Zero,L) , Ans=s []:[] , 
 go(p Zero:D,Ans) :- show(('05',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('05',Ans)) , ! .
 go(p(S),Ans) :- show(('06',p(S))) , normalized(S,S2) , Ans=p S2 , succ(('06',Ans)) , ! .
 go(p N:D,Ans) :- show(('07',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('07',Ans)) , ! .
-go(A@X,Ans) :- show(('08',A@X)) , Max=1 , mem(N,[0,Max]) , eval(A@X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('08',Ans)) , ! .
-go(X,X) :- show(('09',X)) , succ(('09',X)) , ! .
+go(A=X,Ans) :- show(('08',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('08',Ans)) , ! .
+go(s A:B,Ans) :- show(('09',s A:B)), if(mem(_=_,A),map(go),=,[A,A2]), if(mem(_=_,B),map(go),=,[B,B2]), if(A\=A2;B\=B2,go,=,[s A2:B2,Ans]), succ(('09',Ans)), ! .
+go(X,X) :- show(('10',X)) , succ(('10',X)) , ! .
 
 eval(A@X=Y,N,E):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), go(B,C) , replace(X,Y,C,D) , go(D,E) , succ(('ev',E)) , ! .
 
