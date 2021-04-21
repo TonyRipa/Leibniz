@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2021.03.20
+Date:	2021.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -72,6 +72,8 @@ Live Demo of Version 32 at <a href='https://swish.swi-prolog.org/p/phGOgCOY.pl'>
 Live Demo of Version 33 at <a href='https://swish.swi-prolog.org/p/PriFIpMa.pl'>https://swish.swi-prolog.org/p/PriFIpMa.pl</a>
 
 Live Demo of Version 34 at <a href='https://swish.swi-prolog.org/p/NOdHjmYT.pl'>https://swish.swi-prolog.org/p/NOdHjmYT.pl</a>
+
+Live Demo of Version 35 at <a href='https://swish.swi-prolog.org/p/KpjrGnSM.pl'>https://swish.swi-prolog.org/p/KpjrGnSM.pl</a>
 
 ## Leibniz
 
@@ -171,7 +173,7 @@ If for some reason you are partial to Calculus you may model the Algebraic appro
 
 ### Evaluation
 
-In Algebra textbooks, we often see expressions like x*h|ₓ₌₂.  This is read "x*h evaluated at x=2".  This means take the expression x*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
+In Algebra textbooks, we often see expressions like x * h|ₓ₌₂.  This is read "x*h evaluated at x=2".  This means take the expression x*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
 
 ### Order of Operations
 
@@ -184,3 +186,11 @@ How should we group the parts of "x*h evaluated at x=2"? Grouping like "(x*h) ev
 We may reuse functions by assigning (unifying) them to a Prolog variable (notated using capital letters).  Then later we may use that variable anywhere that we want that function.  Some care need be taken. In making an assignment (really a unification) Prolog uses the = symbol.  In this context, the = is a predicate (something that is true or false).  We also use the = symbol inside an expression.  In this context the = symbol is a functor.  A danger is that incorrect usage, instead of throwing an error message, may result in a functor being interpreted as a predicate, or vice-versa.  This can lead to silent logic errors that are hard to debug.  This is not unlike assignment expressions in c, where if we write "if (x=0)" instead of "if (x==0)" then we get no warning, because in c "x=0" is somewhat unintuitively also an expression.  In the future, to avoid these kinds of problems, we may want to change <code>Leibniz</code>'s syntax.  Instead of writing x*h@x=2, we may prefer x*h@x←2 or similar.
 
 In the spirit of purism, we also have the option of reusable functions, without relying additional language features (like Prolog variables).  How?  Well, with functions we already have the facility of replacement.  Instead of rewriting the same function in multiple places in the same expression, we may instead write a generic there.  Then we evaluate the entire expression substituting the generic with a function.  This way we only write the function once.  And we didn't have to rely on any new language features to support this.
+
+## Constraints
+
+<code>Leibniz</code> allows for expressions like x/2@x=6 .  We might read this in words as x/2 at x=6.  The answer should be 3.  Alternatively, we may read this as the function x/2↤x apply 6 .  Again the answer is 3 .  Let us explore the function x/2↤x in more detail.  First we will write it in the more common left to right way x↦x/2 .  This maps (or transforms) x to x/2 .
+
+Now consider a new syntax : 2*x↦x .  That transforms (or maps) 2*x to x .  This seems to have the same effect as x↦x/2 .  The input is reduced by a factor of 2 .  One difference may be that in the first case x↦x/2 may be achieved directly through substitution of x, while 2*x↦x seems implicit and seems to require more than substitutional semantics .  One way to look at this is that it actually is beyond substitutional semantics .  Another way to look at it is that / is just implicit reverse * anyway , so that / was already implicit and beyond substitutional semantics .  One possible resolution is that common implicit reversals become known operations like / .
+
+Allowing for notation like 2*x↦x invites x↤2*x .  Using <code>Leibniz</code>'s @ symbol would be x@2*x .  By allowing <code>Leibniz</code> to use such (backward) expressions , we can further write x@2*x=6 .  We may read this as x at 2*x=6 .  Under that reading the problem is a constraint.  With this minor generalization of syntax , <code>Leibniz</code> can now solve constraints .
