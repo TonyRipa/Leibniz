@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.04.20
+%	Date:		2021.05.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0200,xfx,:).
@@ -31,7 +31,7 @@ prepro(A,Ans) :- A =.. [+|Args] , shop(('04',A)) , map(prepro,Args,L) , prepro(s
 prepro(A,Ans) :- A =.. [*|Args] , shop(('05',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
 prepro(A,Ans) :- A =.. [-|Args] , shop(('06',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
 prepro(A,Ans) :- A =.. [/|Args] , shop(('07',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
-prepro(A@B=C,AP@B=CP) :- shop(('08',A@B)) , prepro(A,AP) , prepro(C,CP) , ! .
+prepro(A@B=C,AP@BP=CP) :- shop(('08',A@B)) , prepro(A,AP) , prepro(B,BP) , prepro(C,CP) , ! .
 prepro(exp(X+Y),Ans) :- shop(('09',exp(X+Y))) , prepro(exp(X),X1) , prepro(p [X1,exp(Y)]:[],Ans) , ! .
 prepro(X,Ans) :- shop(('10',X)) , flat(X,Ans) , ! .
 
@@ -115,12 +115,8 @@ go(A=X,Ans) :- show(('08',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N
 go(s A:B,Ans) :- show(('09',s A:B)),if(mem(_=_,A),map(go,A,A2),A=A2),if(mem(_=_,B),map(go,B,B2),B=B2),if((A\=A2;B\=B2),go(s A2:B2,Ans),=(s A2:B2,Ans)),succ(('09',Ans)),!.
 go(X,X) :- show(('10',X)) , succ(('10',X)) , ! .
 
-eval(X@X=Y  , _ ,  X ) :- show(('ev',X@ X =Y)) , 0/0 <- Y                          , ! .
-eval(X@C*X=Y, _ , Ans) :- show(('ev',X@C*X=Y)) ,   R <- Y/C , eval(X@X=R, _ , Ans) , ! .
-eval(X@X*C=Y, _ , Ans) :- show(('ev',X@X*C=Y)) ,   R <- Y/C , eval(X@X=R, _ , Ans) , ! .
-eval(X@Z*C=Y, _ , Ans) :- show(('ev',X@Z*C=Y)) ,   R <- Y/C , eval(X@Z=R, _ , Ans) , ! .
-eval(X@C*Z=Y, _ , Ans) :- show(('ev',X@C*Z=Y)) ,   R <- Y/C , eval(X@Z=R, _ , Ans) , ! .
-
+eval(X@X=Y, _ , X) :- show(('ev',X@X=Y)) , 0/0 <- Y , ! .
+eval(X@p P:[]=Y, _ , Ans) :- show(('ev',X@X*C=Y)) , sel(X,P,C) , go(p [Y]:C,R) , eval(X@X=R, _ , Ans) , ! .
 eval(A@X=Y,N,E):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), go(B,C) , replace(X,Y,C,D) , go(D,E) , succ(('ev',E)) , ! .
 
 norder(exp(X),0,s [p []:[],p [o,X]:[]]:[]) :- ! .
