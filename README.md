@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2021.05.20
+Date:	2021.06.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -76,6 +76,8 @@ Live Demo of Version 34 at <a href='https://swish.swi-prolog.org/p/NOdHjmYT.pl'>
 Live Demo of Version 35 at <a href='https://swish.swi-prolog.org/p/KpjrGnSM.pl'>https://swish.swi-prolog.org/p/KpjrGnSM.pl</a>
 
 Live Demo of Version 36 at <a href='https://swish.swi-prolog.org/p/FFoGarob.pl'>https://swish.swi-prolog.org/p/FFoGarob.pl</a>
+
+Live Demo of Version 37 at <a href='https://swish.swi-prolog.org/p/MwbaGcrC.pl'>https://swish.swi-prolog.org/p/MwbaGcrC.pl</a>
 
 ## Leibniz
 
@@ -175,7 +177,7 @@ If for some reason you are partial to Calculus you may model the Algebraic appro
 
 ### Evaluation
 
-In Algebra textbooks, we often see expressions like x * h|ₓ₌₂.  This is read "x*h evaluated at x=2".  This means take the expression x*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
+In Algebra textbooks, we often see expressions like x * h|ₓ₌₂.  This is read "x\*h evaluated at x=2".  This means take the expression x\*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
 
 ### Order of Operations
 
