@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2021.06.20
+Date:	2021.07.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -79,6 +79,8 @@ Live Demo of Version 36 at <a href='https://swish.swi-prolog.org/p/FFoGarob.pl'>
 
 Live Demo of Version 37 at <a href='https://swish.swi-prolog.org/p/MwbaGcrC.pl'>https://swish.swi-prolog.org/p/MwbaGcrC.pl</a>
 
+Live Demo of Version 38 at <a href='https://swish.swi-prolog.org/p/oEjzQpQS.pl'>https://swish.swi-prolog.org/p/oEjzQpQS.pl</a>
+
 ## Leibniz
 
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
@@ -91,7 +93,7 @@ Consider the relatively simple (h/h)@h=0. We may proceed [h/h@h=0] = [1@h=0] = 1
 
 This bares a striking resemblance to parse trees for Context Free Grammars. You start with an expression. You apply some transformation rules to the expression. You get a new expression. However, in parse trees each node can be either a terminal or a non-terminal node. If a node is a terminal node then you can terminate and return that node as the parsed value of the original. If a node is a non-terminal node then you cannot terminate and return that node as the parsed value of the original, but you can transform that node using the transformation rules.
 
-We may use a parse tree approach to parse algebraic expressions. Instead of returning 0/0 as a terminal node, we return it as a non-terminal node. This has the same effect as not returning it at all. This results in backtracking that branch of the tree to continue to search for the answer in other parts of the tree. In simplifying h/h@h=0, we avoid returning 0/0, and end up returning 1. Similarly, in simplifying (f(x+h)-f(x))/h @ h=0, we do not return 0/0, and end up returning 2x (literally 2*x).
+We may use a parse tree approach to parse algebraic expressions. Instead of returning 0/0 as a terminal node, we return it as a non-terminal node. This has the same effect as not returning it at all. This results in backtracking that branch of the tree to continue to search for the answer in other parts of the tree. In simplifying h/h@h=0, we avoid returning 0/0, and end up returning 1. Similarly, in simplifying (f(x+h)-f(x))/h @ h=0, we do not return 0/0, and end up returning 2x (literally 2\*x).
 
 <pre>
   			(h@h=0)/(h@h=0)	---	0/0	
@@ -177,15 +179,15 @@ If for some reason you are partial to Calculus you may model the Algebraic appro
 
 ### Evaluation
 
-In Algebra textbooks, we often see expressions like x * h|ₓ₌₂.  This is read "x\*h evaluated at x=2".  This means take the expression x\*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x*h@x=2.
+In Algebra textbooks, we often see expressions like x * h|ₓ₌₂.  This is read "x\*h evaluated at x=2".  This means take the expression x\*h, and everywhere you see an x replace it with 2.  <code>Leibniz</code> supports evaluating expressions.  However, the syntax is slightly different.  Instead of writing the subscript ₓ₌₂, <code>Leibniz</code> uses the non-subscript x=2.  Also instead of the pipe symbol |, <code>Leibniz</code> uses the at symbol @.  For example, <code>Leibniz</code> supports the expression x\*h@x=2.
 
 ### Order of Operations
 
-How should we group the parts of "x\*h evaluated at x=2"? Grouping like "(x\*h) evaluated at (x=2)" has some merits.  One is that the left is an expression, and the right is a substitution.  This can be framed in terms of order of operations.  In x*h|ₓ₌₂ what operator has the highest precedence?  If following the previous suggestion then it is |.
+How should we group the parts of "x\*h evaluated at x=2"? Grouping like "(x\*h) evaluated at (x=2)" has some merits.  One is that the left is an expression, and the right is a substitution.  This can be framed in terms of order of operations.  In x\*h|ₓ₌₂ what operator has the highest precedence?  If following the previous suggestion then it is |.
 
 ### Functions
 
-<code>Leibniz</code> has adopted a new order of operations, specifically to accommodate functions, in as natural a way as possible. Instead of having @ as the highest priority, = is given the highest priority. Instead of x\*h@x=2 being parenthesized like (x\*h)@(x=2), it is parenthesized like (x\*h@x)=2.  This may look odd.  (x\*h)@(x=2) looks like "(x\*h) evaluated at (x=2)". (x\*h@x)=2 looks like "(x\*h evaluated at x) equals 2". Seemingly nonsensical. However, in the expression x\*h|ₓ₌₂ the = was never really an equal (e.g. it was never symmetric). A better reading may be "x\*h substitute x with 2". So, | is substitute. The = is with. So, (x\*h)@(x=2) means "(x\*h) substitute (x with 2)". While (x\*h@x)=2 should read "(x\*h substitute x) with 2".  This is at least a minor improvement.  It looks somewhat like a partial application.  The "x\*h substitute x" does seem to leave something hanging (like the other shoe to drop).  This may be seen as the nature of a function.  A function is a reification of part of a computation.  In x\*h@x=2, the x\*h@x is a function.  This is not dissimilar to the relatively familiar arrow notation (e.g. C++'s => or Java's ->) for a function.  A notation like x↦x\*h means a function with argument x and returns x\*h.  We could easily imagine a backward arrow x\*h↤x means a function with argument x and returns x*h.  <code>Leibniz</code>'s @ is like ↤.
+<code>Leibniz</code> has adopted a new order of operations, specifically to accommodate functions, in as natural a way as possible. Instead of having @ as the highest priority, = is given the highest priority. Instead of x\*h@x=2 being parenthesized like (x\*h)@(x=2), it is parenthesized like (x\*h@x)=2.  This may look odd.  (x\*h)@(x=2) looks like "(x\*h) evaluated at (x=2)". (x\*h@x)=2 looks like "(x\*h evaluated at x) equals 2". Seemingly nonsensical. However, in the expression x\*h|ₓ₌₂ the = was never really an equal (e.g. it was never symmetric). A better reading may be "x\*h substitute x with 2". So, | is substitute. The = is with. So, (x\*h)@(x=2) means "(x\*h) substitute (x with 2)". While (x\*h@x)=2 should read "(x\*h substitute x) with 2".  This is at least a minor improvement.  It looks somewhat like a partial application.  The "x\*h substitute x" does seem to leave something hanging (like the other shoe to drop).  This may be seen as the nature of a function.  A function is a reification of part of a computation.  In x\*h@x=2, the x\*h@x is a function.  This is not dissimilar to the relatively familiar arrow notation (e.g. C++'s => or Java's ->) for a function.  A notation like x↦x\*h means a function with argument x and returns x\*h.  We could easily imagine a backward arrow x\*h↤x means a function with argument x and returns x\*h.  <code>Leibniz</code>'s @ is like ↤.
 
 We may reuse functions by assigning (unifying) them to a Prolog variable (notated using capital letters).  Then later we may use that variable anywhere that we want that function.  Some care need be taken. In making an assignment (really a unification) Prolog uses the = symbol.  In this context, the = is a predicate (something that is true or false).  We also use the = symbol inside an expression.  In this context the = symbol is a functor.  A danger is that incorrect usage, instead of throwing an error message, may result in a functor being interpreted as a predicate, or vice-versa.  This can lead to silent logic errors that are hard to debug.  This is not unlike assignment expressions in c, where if we write "if (x=0)" instead of "if (x==0)" then we get no warning, because in c "x=0" is somewhat unintuitively also an expression.  In the future, to avoid these kinds of problems, we may want to change <code>Leibniz</code>'s syntax.  Instead of writing x\*h@x=2, we may prefer x*h@x←2 or similar.
 
@@ -195,6 +197,6 @@ In the spirit of purism, we also have the option of reusable functions, without 
 
 <code>Leibniz</code> allows for expressions like x/2@x=6 .  We might read this in words as x/2 at x=6.  The answer should be 3.  Alternatively, we may read this as the function x/2↤x apply 6 .  Again the answer is 3 .  Let us explore the function x/2↤x in more detail.  First we will write it in the more common left to right way x↦x/2 .  This maps (or transforms) x to x/2 .
 
-Now consider a new syntax : 2\*x↦x .  That transforms (or maps) 2\*x to x .  This seems to have the same effect as x↦x/2 .  The input is reduced by a factor of 2 .  One difference may be that in the first case x↦x/2 may be achieved directly through substitution of x, while 2*x↦x seems implicit and seems to require more than substitutional semantics .  One way to look at this is that it actually is beyond substitutional semantics .  Another way to look at it is that / is just implicit reverse * anyway , so that / was already implicit and beyond substitutional semantics .  One possible resolution is that common implicit reversals become known operations like / .
+Now consider a new syntax : 2\*x↦x .  That transforms (or maps) 2\*x to x .  This seems to have the same effect as x↦x/2 .  The input is reduced by a factor of 2 .  One difference may be that in the first case x↦x/2 may be achieved directly through substitution of x, while 2\*x↦x seems implicit and seems to require more than substitutional semantics .  One way to look at this is that it actually is beyond substitutional semantics .  Another way to look at it is that / is just implicit reverse * anyway , so that / was already implicit and beyond substitutional semantics .  One possible resolution is that common implicit reversals become known operations like / .
 
-Allowing for notation like 2\*x↦x invites x↤2\*x .  Using <code>Leibniz</code>'s @ symbol would be x@2\*x .  By allowing <code>Leibniz</code> to use such (backward) expressions , we can further write x@2\*x=6 .  We may read this as x at 2*x=6 .  Under that reading the problem is a constraint.  With this minor generalization of syntax , <code>Leibniz</code> can now solve constraints .
+Allowing for notation like 2\*x↦x invites x↤2\*x .  Using <code>Leibniz</code>'s @ symbol would be x@2\*x .  By allowing <code>Leibniz</code> to use such (backward) expressions , we can further write x@2\*x=6 .  We may read this as x at 2\*x=6 .  Under that reading the problem is a constraint.  With this minor generalization of syntax , <code>Leibniz</code> can now solve constraints .
