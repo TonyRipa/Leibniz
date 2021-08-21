@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.07.20
+%	Date:		2021.08.20
 %	Leibniz:	A Rule System for Math
 
 :- op(0200,xfx,:).
@@ -68,6 +68,7 @@ nan(X) :- is0(Z) , X=p [Z]:[Z] , ! .
 nan(X) :- haso(X) , ! .
  an(X) :- not(nan(X)) , ! .
 
+take(s E:[],[s H:[]|T],T) :- normalize(E:H,[]:[]) , ! .
 take(E,[H|T],T) :- equal(E,H) , ! .
 take(E,[H|T],[H|T0]) :- take(E,T,T0) , ! .
 
