@@ -1,7 +1,7 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.08.20
-%	Leibniz:	A Rule System for Math
+%	Date:		2021.09.20
+%	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
 :- op(0300,fy,s).
@@ -31,10 +31,12 @@ prepro(A,Ans) :- A =.. [+|Args] , shop(('04',A)) , map(prepro,Args,L) , prepro(s
 prepro(A,Ans) :- A =.. [*|Args] , shop(('05',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
 prepro(A,Ans) :- A =.. [-|Args] , shop(('06',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
 prepro(A,Ans) :- A =.. [/|Args] , shop(('07',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
-prepro(A=B,AP=BP) :- shop(('08',A=B)) , prepro(A,AP) , prepro(B,BP) , ! .
-prepro(A@B,AP@BP) :- shop(('09',A@B)) , prepro(A,AP) , prepro(B,BP) , ! .
-prepro(exp(X+Y),Ans) :- shop(('10',exp(X+Y))) , prepro(exp(X),X1) , prepro(p [X1,exp(Y)]:[],Ans) , ! .
-prepro(X,Ans) :- shop(('11',X)) , flat(X,Ans) , ! .
+prepro(A^0,Ans) :- shop(('08',A)) , prepro(1,Ans) , ! .
+prepro(A^N,Ans) :- shop(('09',A)) , N2 is N-1 , prepro(A*A^N2,Ans) , ! .
+prepro(A=B,AP=BP) :- shop(('10',A=B)) , prepro(A,AP) , prepro(B,BP) , ! .
+prepro(A@B,AP@BP) :- shop(('11',A@B)) , prepro(A,AP) , prepro(B,BP) , ! .
+prepro(exp(X+Y),Ans) :- shop(('12',exp(X+Y))) , prepro(exp(X),X1) , prepro(p [X1,exp(Y)]:[],Ans) , ! .
+prepro(X,Ans) :- shop(('13',X)) , flat(X,Ans) , ! .
 
 map(_,[],[]). map(F,[H|T],[H1|T1]) :- call(F,H,H1) , map(F,T,T1) .
 mem(H,[H|_]). mem(H,[_|T]) :- mem(H,T).
@@ -97,12 +99,11 @@ multi_diff([],N,N) :- ! .
 multi_diff([H|T],N,A) :- app(F,[H|B],N) , app(F,B,N2) , multi_diff(T,N2,A) , ! .
 multi_diff([_|T],N,A) :- multi_diff(T,N,A) , ! .
 
-factors(N,[N]) :- number(N) , ! .
-factors(N,[N]) :- atom(N) , ! .
 factors(p F:[],F) :- ! .
 factors(s [F]:[],A) :- factors(F,A) , ! .
 factors(s S:[],[p D1:[],s N3:[]]) :- map(factors,S,N1) , reduce(multi_intersect,N1,D1) , map(multi_diff(D1),N1,N2) , bagof(p X:[],mem(X,N2),N3) , ! .
 factors(s X:Y,[p I:[],s [p X2:[]]:[p Y2:[]]]) :- factors(s X:[],X1),factors(s Y:[],Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
+factors(X,[X]) :- ! .
 
 flatfactors(E,A) :- factors(E,F) , flat(p F:[],p A:[]) , ! .
 
