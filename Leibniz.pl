@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.09.20
+%	Date:		2021.10.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -26,17 +26,18 @@ succ(Text) :- if(see, (write('+ '),writeln(Text)) ) .
 
 prepro(0,s []:[]) :- shop(('01',0)) , ! .
 prepro(1,p []:[]) :- shop(('02',1)) , ! .
-prepro(f(X),Ans) :- shop(('03',f(X))) , prepro(X*X, Ans) , ! .
-prepro(A,Ans) :- A =.. [+|Args] , shop(('04',A)) , map(prepro,Args,L) , prepro(s L:[],Ans) , ! .
-prepro(A,Ans) :- A =.. [*|Args] , shop(('05',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
-prepro(A,Ans) :- A =.. [-|Args] , shop(('06',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
-prepro(A,Ans) :- A =.. [/|Args] , shop(('07',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
-prepro(A^0,Ans) :- shop(('08',A)) , prepro(1,Ans) , ! .
-prepro(A^N,Ans) :- shop(('09',A)) , N2 is N-1 , prepro(A*A^N2,Ans) , ! .
-prepro(A=B,AP=BP) :- shop(('10',A=B)) , prepro(A,AP) , prepro(B,BP) , ! .
-prepro(A@B,AP@BP) :- shop(('11',A@B)) , prepro(A,AP) , prepro(B,BP) , ! .
-prepro(exp(X+Y),Ans) :- shop(('12',exp(X+Y))) , prepro(exp(X),X1) , prepro(p [X1,exp(Y)]:[],Ans) , ! .
-prepro(X,Ans) :- shop(('13',X)) , flat(X,Ans) , ! .
+prepro(X,Ans) :- integer(X) , X>1 , shop(('03','Int')) , Y is X-1 , prepro(1+Y,Ans) , ! .
+prepro(f(X),Ans) :- shop(('04',f(X))) , prepro(X*X, Ans) , ! .
+prepro(A,Ans) :- A =.. [+|Args] , shop(('05',A)) , map(prepro,Args,L) , prepro(s L:[],Ans) , ! .
+prepro(A,Ans) :- A =.. [*|Args] , shop(('06',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
+prepro(A,Ans) :- A =.. [-|Args] , shop(('07',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
+prepro(A,Ans) :- A =.. [/|Args] , shop(('08',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
+prepro(A^0,Ans) :- shop(('09',A^0)) , prepro(1,Ans) , ! .
+prepro(A^N,Ans) :- integer(N) , N>0 , shop(('10',A^N)) , N2 is N-1 , prepro(A*A^N2,Ans) , ! .
+prepro(A=B,AP=BP) :- shop(('11',A=B)) , prepro(A,AP) , prepro(B,BP) , ! .
+prepro(A@B,AP@BP) :- shop(('12',A@B)) , prepro(A,AP) , prepro(B,BP) , ! .
+prepro(exp(X+Y),Ans) :- shop(('13',exp(X+Y))) , prepro(exp(X),X1) , prepro(p [X1,exp(Y)]:[],Ans) , ! .
+prepro(X,Ans) :- shop(('14',X)) , flat(X,Ans) , ! .
 
 map(_,[],[]). map(F,[H|T],[H1|T1]) :- call(F,H,H1) , map(F,T,T1) .
 mem(H,[H|_]). mem(H,[_|T]) :- mem(H,T).
