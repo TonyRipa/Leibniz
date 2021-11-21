@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.10.20
+%	Date:		2021.11.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -128,23 +128,23 @@ eval(A=Y,N,E):- show(('ev',A=Y)) , go(A,B) , A\=B, eval(B=Y,N,E) .
 norder(exp(X),0,s [p []:[],p [o,X]:[]]:[]) :- ! .
 norder(exp(X),1,s [p []:[],X,p [o,X,X]:[]]:[]) :- ! .
 
-isleaf(X) :- ( atomic(X) ; X=exp(_) ) , ! .
-replace(OldLeaf,NewLeaf,OldTree,NewTree) :- isleaf(OldTree) , (OldTree = OldLeaf -> NewTree = NewLeaf ; NewTree = OldTree) , ! .
-replace(OldLeaf,NewLeaf,OldTree,NewTree) :- =..(OldTree,[Name|Args]) , map(replace(OldLeaf,NewLeaf),Args,Args2) , =..(NewTree,[Name|Args2]) , ! .
+replace(Find,Repl,OldTree,NewTree) :- OldTree = Find , NewTree = Repl , ! .
+replace(Find,Repl,OldTree,NewTree) :- =..(OldTree,[Name|Args]) , map(replace(Find,Repl),Args,Args2) , =..(NewTree,[Name|Args2]) , ! .
 
-postpro(s []:[],0) :- shop(('01',0-0)) , ! .
-postpro(s [A]:[],AP) :- shop(('02',A-0)) , postpro(A,AP) , ! .
-postpro(s L:[],AP+BP) :- shop(('03',L-0)) , app(L1,[E],L) , postpro(s L1:[],AP) , postpro(E,BP) , ! .
-postpro(p []:[],1) :- shop(('04',1/1)) , ! .
-postpro(p [A]:[],AP) :- shop(('05',A/1)) , postpro(A,AP) , ! .
-postpro(p L:[],AP*BP) :- shop(('06',L/1)) , app(L1,[E],L) , postpro(p L1:[],AP) , postpro(E,BP) , ! .
-postpro(s []:A,Ans) :- shop(('07',0-A)) , postpro(s A:[],AP) , number(AP) , is(Ans,-AP) , ! .
-postpro(s []:A,-(AP)) :- shop(('08',0-A)) , postpro(s A:[],AP) , ! .
-postpro(s A:B,AP-BP) :- shop(('09',A-B)) , postpro(s A:[],AP) , postpro(s B:[],BP) , ! .
-postpro(p A:B,AP/BP) :- shop(('10',A/B)) , postpro(p A:[],AP) , postpro(p B:[],BP) , ! .
-postpro(exp(A),exp(AP)) :- shop(('11',exp(A))) , postpro(A,AP) , ! .
-postpro(A@B,AP@BP) :- shop(('12',A@B)) , postpro(A,AP) , postpro(B,BP) , ! .
-postpro(X,X) :- shop(('13',X)) , ! .
+postpro(X,Z) :- shop(('01',1)) , replace(p []:[],1,X,Y) , X\=Y , postpro(Y,Z) , ! .
+postpro(s []:[],0) :- shop(('02',0-0)) , ! .
+postpro(s [A]:[],AP) :- shop(('03',A-0)) , postpro(A,AP) , ! .
+postpro(s L:[],AP) :- shop(('04',L-0)) , sel(N1,L,L1) , number(N1) , sel(N2,L1,L2) , number(N2) , plus(N1,N2,N3) , postpro(s [N3|L2]:[],AP) , ! .
+postpro(s L:[],AP+BP) :- shop(('05',L-0)) , app(L1,[E],L) , postpro(s L1:[],AP) , postpro(E,BP) , ! .
+postpro(p [A]:[],AP) :- shop(('06',A/1)) , postpro(A,AP) , ! .
+postpro(p L:[],AP*BP) :- shop(('07',L/1)) , app(L1,[E],L) , postpro(p L1:[],AP) , postpro(E,BP) , ! .
+postpro(s []:A,Ans) :- shop(('08',0-A)) , postpro(s A:[],AP) , number(AP) , is(Ans,-AP) , ! .
+postpro(s []:A,-(AP)) :- shop(('09',0-A)) , postpro(s A:[],AP) , ! .
+postpro(s A:B,AP-BP) :- shop(('10',A-B)) , postpro(s A:[],AP) , postpro(s B:[],BP) , ! .
+postpro(p A:B,AP/BP) :- shop(('11',A/B)) , postpro(p A:[],AP) , postpro(p B:[],BP) , ! .
+postpro(exp(A),exp(AP)) :- shop(('12',exp(A))) , postpro(A,AP) , ! .
+postpro(A@B,AP@BP) :- shop(('13',A@B)) , postpro(A,AP) , postpro(B,BP) , ! .
+postpro(X,X) :- shop(('14',X)) , ! .
 
 <----(Answer,X) :- if(not(see),assert(see)) , show('PreProcessing') , prepro(X,Answer) .	%	PreProcess
 <---(Answer,X) :- <----(P,X) , show('Simplifying') , go(P,Answer) .							%	Simplify
