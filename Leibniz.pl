@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2021.12.20
+%	Date:		2022.01.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -107,6 +107,9 @@ factors(s S:[],[p D1:[],s N3:[]]) :- map(factors,S,N1) , reduce(multi_intersect,
 factors(s X:Y,[p I:[],s [p X2:[]]:[p Y2:[]]]) :- factors(s X:[],X1),factors(s Y:[],Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
 factors(X,[X]) :- ! .
 
+divide(N,D,Q) :- equal(N,D) , is1(Q) , ! .
+divide(s N:[],s D:[],Q) :- go(s N:D,s N2:[]) , len(N,Nn) , len(N2,N2n) , N2n < Nn , divide(s N2:[],s D:[], Rem) , go(s [p []:[], Rem]:[] , Q) .
+
 flatfactors(E,A) :- factors(E,F) , flat(p F:[],p A:[]) , ! .
 
 go(A,Ans) :- show(('01',A)) , empty(A,B) , A\=B , go(B,Ans) , succ(('01',Ans)) , ! .
@@ -115,11 +118,12 @@ go(s A:B,Ans) :- show(('03',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1
 go(p L:[],Ans) :- show(('04',p L:[])) , is0(Zero) , mem(Zero,L) , Ans=s []:[] , succ(('04',Ans)) , ! .
 go(p Zero:D,Ans) :- show(('05',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('05',Ans)) , ! .
 go(p(S),Ans) :- show(('06',p(S))) , normalized(S,S2) , Ans=p S2 , succ(('06',Ans)) , ! .
-go(p N:D,Ans) :- show(('07',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('07',Ans)) , ! .
-go(A@X,Ans) :- show(('08',A@X)) , go(A,A1) , Ans=A1@X , succ(('08',Ans)) , ! .
-go(A=X,Ans) :- show(('09',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('09',Ans)) , ! .
-go(s A:B,Ans) :- show(('10',s A:B)),if(mem(_=_,A),map(go,A,A2),A=A2),if(mem(_=_,B),map(go,B,B2),B=B2),if((A\=A2;B\=B2),go(s A2:B2,Ans),=(s A2:B2,Ans)),succ(('10',Ans)),!.
-go(X,X) :- show(('11',X)) , succ(('11',X)) , ! .
+go(p [s A:B]:[s C:D],Ans) :- show(('07',p A:B)) , divide(s A:B,s C:D,S) , S\=p [s A:B]:[s C:D] , go(S,Ans) , succ(('07',Ans)) , ! .
+go(p N:D,Ans) :- show(('08',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('08',Ans)) , ! .
+go(A@X,Ans) :- show(('09',A@X)) , go(A,A1) , Ans=A1@X , succ(('09',Ans)) , ! .
+go(A=X,Ans) :- show(('10',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('10',Ans)) , ! .
+go(s A:B,Ans) :- show(('11',s A:B)),if(mem(_=_,A),map(go,A,A2),A=A2),if(mem(_=_,B),map(go,B,B2),B=B2),if((A\=A2;B\=B2),go(s A2:B2,Ans),=(s A2:B2,Ans)),succ(('11',Ans)),!.
+go(X,X) :- show(('12',X)) , succ(('12',X)) , ! .
 
 eval(X@X=Y, _ , X) :- show(('ev',X@X=Y)) , 0/0 <- Y , ! .
 eval(X@p P:[]=Y, _ , Ans) :- show(('ev',X@X*C=Y)) , sel(X,P,C) , go(p [Y]:C,R) , eval(X@X=R, _ , Ans) , ! .
