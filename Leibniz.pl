@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.02.20
+%	Date:		2022.03.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -107,8 +107,11 @@ multi_diff([H|T],N,A) :- app(F,[H|B],N) , app(F,B,N2) , multi_diff(T,N2,A) , ! .
 multi_diff([_|T],N,A) :- multi_diff(T,N,A) , ! .
 
 factors(p F:[],F) :- ! .
+factors(p []:D,Ans) :- factors(p D:[],D2) , bagof(p []:[X],mem(X,D2),Ans) , ! .
+factors(p N:D,Ans) :- factors(p N:[], N1) , factors(p D:[], D1) , multi_intersect(N1,D1,I) , multi_diff(I,N1,N2) , multi_diff(I,D1,D2) , factors(p N2:[],N3) , factors(p []:D2,D3) , app(N3,D3,Ans) , ! .
 factors(s [F]:[],A) :- factors(F,A) , ! .
-factors(s S:[],[p D1:[],s N3:[]]) :- map(factors,S,N1) , reduce(multi_intersect,N1,D1) , map(multi_diff(D1),N1,N2) , bagof(p X:[],mem(X,N2),N3) , ! .
+factors(s N:[],[s N4:[]]) :- map(factors,N,N1) , reduce(multi_intersect,N1,D1) , map(multi_diff(D1),N1,N2) , D1=[] , bagof(p X:[],mem(X,N2),N3) , map(flat,N3,N4) , ! .
+factors(s N:[],[D2,s N4:[]]) :- map(factors,N,N1) , reduce(multi_intersect,N1,D1) , map(multi_diff(D1),N1,N2) , flat(p D1:[],D2) , bagof(p X:[],mem(X,N2),N3) , map(flat,N3,N4) , ! .
 factors(s X:Y,[p I:[],s [p X2:[]]:[p Y2:[]]]) :- factors(s X:[],X1),factors(s Y:[],Y1) , multi_intersect(X1,Y1,I) , multi_diff(I,X1,X2) , multi_diff(I,Y1,Y2) , ! .
 factors(X,[X]) :- ! .
 
@@ -158,7 +161,7 @@ postpro(exp(A),exp(AP)) :- shop(('13',exp(A))) , postpro(A,AP) , ! .
 postpro(A@B,AP@BP) :- shop(('14',A@B)) , postpro(A,AP) , postpro(B,BP) , ! .
 postpro(X,X) :- shop(('15',X)) , ! .
 
-<----(Answer,X) :- if(not(see),assert(see)) , show('PreProcessing') , prepro(X,Answer) .	%	PreProcess
-<---(Answer,X) :- <----(P,X) , show('Simplifying') , go(P,Answer) .							%	Simplify
-<--(Answer,X) :- <---(Simp,X) , show('PostProcessing') , postpro(Simp,Answer) .				%	PostProcess
-<-(Answer,X) :- if(see,retract(see)) , prepro(X,P) , go(P,Simp) , postpro(Simp,Answer) .	%	Quiet
+<----(Answer,X) :- if(not(see),assert(see)) , show('PreProcessing') , prepro(X,Answer) .    %   PreProcess
+<---(Answer,X) :- <----(P,X) , show('Simplifying') , go(P,Answer) .                         %   Simplify
+<--(Answer,X) :- <---(Simp,X) , show('PostProcessing') , postpro(Simp,Answer) .             %   PostProcess
+<-(Answer,X) :- if(see,retract(see)) , prepro(X,P) , go(P,Simp) , postpro(Simp,Answer) .    %   Quiet

@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2022.02.20
+Date:	2022.03.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -95,6 +95,8 @@ Live Demo of Version 44 at <a href='https://swish.swi-prolog.org/p/TBZTJzkl.pl'>
 
 Live Demo of Version 45 at <a href='https://swish.swi-prolog.org/p/mfHlmCBV.pl'>https://swish.swi-prolog.org/p/mfHlmCBV.pl</a>
 
+Live Demo of Version 46 at <a href='https://swish.swi-prolog.org/p/MwwhoPQQ.pl'>https://swish.swi-prolog.org/p/MwwhoPQQ.pl</a>
+
 ## Leibniz
 
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
@@ -110,7 +112,7 @@ This bares a striking resemblance to parse trees for Context Free Grammars. You 
 We may use a parse tree approach to parse algebraic expressions. Instead of returning 0/0 as a terminal node, we return it as a non-terminal node. This has the same effect as not returning it at all. This results in backtracking that branch of the tree to continue to search for the answer in other parts of the tree. In simplifying h/h@h=0, we avoid returning 0/0, and end up returning 1. Similarly, in simplifying (f(x+h)-f(x))/h @ h=0, we do not return 0/0, and end up returning 2x (literally 2\*x).
 
 <pre>
-  			(h@h=0)/(h@h=0)	---	0/0	
+  			(h@h=0)/(h@h=0)	---	0/0
   		  /
   h/h@h=0
   		  \
@@ -146,7 +148,7 @@ This semantic class seems to have a corresponding visual interpretation:
 <pre>
            ▄█
          ▄▀ █ x
-       ▄▀   █ 
+       ▄▀   █
      ▄█▄▄▄▄▄█
          x
 </pre>
@@ -159,10 +161,10 @@ Similarly:
             █
            ██
           █ █
-         █  █ 
+         █  █
         █   █ 2x
        █    █
-      █     █ 
+      █     █
      ████████
          x
 </pre>
