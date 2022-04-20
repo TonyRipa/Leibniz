@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.03.20
+%	Date:		2022.04.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -62,6 +62,7 @@ empty(X,X) :- ! .
 
 haso(o) :- ! .
 haso(p A:_) :- mem(X,A) , haso(X) , ! .
+haso(s A:_) :- mem(X,A) , haso(X) , ! .	%	+2022.04
 
 equal(X,X) :- ! .
 equal(X,Y) :- go(X,Z) , ( Y=Z , ! ; go(Y,Z) ) , ! .
@@ -129,7 +130,8 @@ go(p(S),Ans) :- show(('06',p(S))) , normalized(S,S2) , go(p S2,Ans) , succ(('06'
 go(p [s A:B]:[s C:D],Ans) :- show(('07',p A:B)) , divide(s A:B,s C:D,S) , S\=p [s A:B]:[s C:D] , go(S,Ans) , succ(('07',Ans)) , ! .
 go(p N:D,Ans) :- show(('08',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('08',Ans)) , ! .
 go(A@X,Ans) :- show(('09',A@X)) , go(A,A1) , Ans=A1@X , succ(('09',Ans)) , ! .
-go(A=X,Ans) :- show(('10',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('10',Ans)) , ! .
+%go(A=X,Ans) :- show(('10',A=X)) , Max=1 , mem(N,[0,Max]) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('10',Ans)) , ! .	%	-2022.04
+go(A=X,Ans) :- show(('10',A=X)) , Max=2 , between(0,Max,N) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('10',Ans)) , ! .	%	+2022.04
 go(s A:B,Ans) :- show(('11',s A:B)),if(mem(_=_,A),map(go,A,A2),A=A2),if(mem(_=_,B),map(go,B,B2),B=B2),if((A\=A2;B\=B2),go(s A2:B2,Ans),=(s A2:B2,Ans)),succ(('11',Ans)),!.
 go(p N:D,Ans) :- show(('12',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('12',Ans)) , ! .
 go(X,X) :- show(('13',X)) , succ(('13',X)) , ! .
@@ -139,8 +141,9 @@ eval(X@p P:[]=Y, _ , Ans) :- show(('ev',X@X*C=Y)) , sel(X,P,C) , go(p [Y]:C,R) ,
 eval(A@X=Y,N,E):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), go(B,C) , replace(X,Y,C,D) , go(D,E) , succ(('ev',E)) , ! .
 eval(A=Y,N,E):- show(('ev',A=Y)) , go(A,B) , A\=B, eval(B=Y,N,E) .
 
-norder(exp(X),0,s [p []:[],p [o,X]:[]]:[]) :- ! .
-norder(exp(X),1,s [p []:[],X,p [o,X,X]:[]]:[]) :- ! .
+norder(exp(X),0,s [p []:[] ,   	 										p [o,X]	   :[]]	:[]) :- ! .
+norder(exp(X),1,s [p []:[] , X , 										p [o,X,X]  :[]]	:[]) :- ! .
+norder(exp(X),2,s [p []:[] , X , p [X,X]:[ s [p []:[],p []:[]] : [] ],	p [o,X,X,X]:[]]	:[]) :- ! .
 
 replace(Find,Repl,OldTree,NewTree) :- OldTree = Find , NewTree = Repl , ! .
 replace(Find,Repl,OldTree,NewTree) :- =..(OldTree,[Name|Args]) , map(replace(Find,Repl),Args,Args2) , =..(NewTree,[Name|Args2]) , ! .
