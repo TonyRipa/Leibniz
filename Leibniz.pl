@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.05.20
+%	Date:		2022.06.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -127,17 +127,16 @@ flatfactors(E,A) :- factors(E,F) , flat(p F:[],p A:[]) , ! .
 
 go(A,Ans) :- show(('01',A)) , empty(A,B) , A\=B , go(B,Ans) , succ(('01',Ans)) , ! .
 go(A,Ans) :- show(('02',A)) ,  flat(A,B) , A\=B , go(B,Ans) , succ(('02',Ans)) , ! .
-go(s A:B,Ans) :- show(('03',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1) , normalized(A1:B1,A2:B2) , Ans=s A2:B2 , succ(('03',Ans)) , ! .
-go(p L:[],Ans) :- show(('04',p L:[])) , is0(Zero) , mem(Zero,L) , Ans=s []:[] , succ(('04',Ans)) , ! .
+go(s A:B,Ans) :- show(('03',s A:B)) , map(go,A,A2) , A\=A2 , go(s A2:B,Ans) , succ(('03',Ans)) , ! .
+go(s A:B,Ans) :- show(('04',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1) , normalized(A1:B1,A2:B2) , Ans=s A2:B2 , succ(('04',Ans)) , ! .
 go(p Zero:D,Ans) :- show(('05',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('05',Ans)) , ! .
 go(p(S),Ans) :- show(('06',p(S))) , normalized(S,S2) , go(p S2,Ans) , succ(('06',Ans)) , ! .
 go(p [s A:B]:[s C:D],Ans) :- show(('07',p A:B)) , divide(s A:B,s C:D,S) , S\=p [s A:B]:[s C:D] , go(S,Ans) , succ(('07',Ans)) , ! .
 go(p N:D,Ans) :- show(('08',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('08',Ans)) , ! .
 go(A@X,Ans) :- show(('09',A@X)) , go(A,A1) , Ans=A1@X , succ(('09',Ans)) , ! .
 go(A=X,Ans) :- show(('10',A=X)) , Max=2 , between(0,Max,N) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('10',Ans)) , ! .
-go(s A:B,Ans) :- show(('11',s A:B)),if(mem(_=_,A),map(go,A,A2),A=A2),if(mem(_=_,B),map(go,B,B2),B=B2),if((A\=A2;B\=B2),go(s A2:B2,Ans),=(s A2:B2,Ans)),succ(('11',Ans)),!.
-go(p N:D,Ans) :- show(('12',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('12',Ans)) , ! .
-go(X,X) :- show(('13',X)) , succ(('13',X)) , ! .
+go(p N:D,Ans) :- show(('11',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('11',Ans)) , ! .
+go(X,X) :- show(('12',X)) , succ(('12',X)) , ! .
 
 eval(X@X=Y, _ , X) :- show(('ev',X@X=Y)) , 0/0 <- Y , ! .
 eval(X@p P:[]=Y, _ , Ans) :- show(('ev',X@X*C=Y)) , sel(X,P,C) , go(p [Y]:C,R) , eval(X@X=R, _ , Ans) , ! .
