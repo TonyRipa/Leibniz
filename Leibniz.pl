@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.06.20
+%	Date:		2022.07.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -49,6 +49,9 @@ app([],L,L). app([H|L1],L2,[H|L3]) :- app(L1,L2,L3).
 sel(E,Big,Lit) :- app(F,[E|B],Big) , app(F,B,Lit)  .
 rev([A],[A]). rev([A,B],[B,A]).
 len([],0) . len([_|L],C1) :- len(L,C2) , C1 is C2+1 .
+
+in(X,X) . in(P,W) :- W =.. [_|Args] , mem(A,Args) , in(P,A) .
+ins(P,W,N) :- findall(_,in(P,W),B) , len(B,N) .
 
 flat(p [H]:[],Ans) :- flat(H,Ans) , ! .
 flat(s L:[],Ans) :- sel(s A:B,L,L2) , app(A,L2,L3) , flat(s L3:B,Ans) , ! .
@@ -138,6 +141,7 @@ go(A=X,Ans) :- show(('10',A=X)) , Max=2 , between(0,Max,N) , eval(A=X,N,Ans) , (
 go(p N:D,Ans) :- show(('11',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('11',Ans)) , ! .
 go(X,X) :- show(('12',X)) , succ(('12',X)) , ! .
 
+eval(A@X=Y, _ , _) :- show(('ev',A@X=Y)) , ins(A,X,M) , M > 1 , ! , fail .
 eval(X@X=Y, _ , X) :- show(('ev',X@X=Y)) , 0/0 <- Y , ! .
 eval(X@p P:[]=Y, _ , Ans) :- show(('ev',X@X*C=Y)) , sel(X,P,C) , go(p [Y]:C,R) , eval(X@X=R, _ , Ans) , ! .
 eval(A@X=Y,N,E):- show(('ev',A@X=Y)) , if(is0(Y),norder(exp(X),N,R),R=exp(Y)) , replace(exp(X),R,A,B), go(B,C) , replace(X,Y,C,D) , go(D,E) , succ(('ev',E)) , ! .
@@ -164,7 +168,8 @@ postpro(s A:B,AP-BP) :- shop(('11',A-B)) , postpro(s A:[],AP) , postpro(s B:[],B
 postpro(p A:B,AP/BP) :- shop(('12',A/B)) , postpro(p A:[],AP) , postpro(p B:[],BP) , ! .
 postpro(exp(A),exp(AP)) :- shop(('13',exp(A))) , postpro(A,AP) , ! .
 postpro(A@B,AP@BP) :- shop(('14',A@B)) , postpro(A,AP) , postpro(B,BP) , ! .
-postpro(X,X) :- shop(('15',X)) , ! .
+postpro(A=B,AP=BP) :- shop(('15',A=B)) , postpro(A,AP) , postpro(B,BP) , ! .
+postpro(X,X) :- shop(('16',X)) , ! .
 
 <----(Answer,X) :- if(not(see),assert(see)) , show('PreProcessing') , prepro(X,Answer) .    %   PreProcess
 <---(Answer,X) :- <----(P,X) , show('Simplifying') , go(P,Answer) .                         %   Simplify
