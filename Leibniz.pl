@@ -1,19 +1,22 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.07.20
+%	Date:		2022.08.20
 %	Leibniz:	A Rule System for Expressions
 
-:- op(0200,xfx,:).
-:- op(0300,fy,s).
-:- op(0400,fy,p).
-:- op(0500,fy,/).
-:- op(0600,fy,*).
-:- op(0700,yfx,@).
-:- op(0800,yfx,=).
-:- op(0900,xfx,<-).
-:- op(1000,xfx,<--).
-:- op(1100,xfx,<---).
-:- op(1200,xfx,<----).
+:- op(020,xfx,[^,:]).
+:- op(020,fy,[+,-]).
+:- op(030,fy,s).
+:- op(040,fy,p).
+:- op(040,yfx,[*,/]).
+:- op(050,fy,/).
+:- op(050,yfx,[+,-]).
+:- op(060,fy,*).
+:- op(070,yfx,@).
+:- op(080,yfx,=).
+:- op(090,xfx,<-).
+:- op(100,xfx,<--).
+:- op(110,xfx,<---).
+:- op(120,xfx,<----).
 
 :- dynamic see/0.
 
