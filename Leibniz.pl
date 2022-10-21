@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.09.20
+%	Date:		2022.10.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -128,19 +128,22 @@ divide(s N:[],s D:[],Q) :- go(s N:D,s N2:[]) , len(N,Nn) , len(N2,N2n) , N2n < N
 
 flatfactors(E,A) :- factors(E,F) , flat(p F:[],p A:[]) , ! .
 
+distribute(E,List,Ans) :- map({E}/[In,Out]>>(Out=p[E,In]:[]),List,Ans) .
+
 go(A,Ans) :- show(('01',A)) , empty(A,B) , A\=B , go(B,Ans) , succ(('01',Ans)) , ! .
 go(A,Ans) :- show(('02',A)) ,  flat(A,B) , A\=B , go(B,Ans) , succ(('02',Ans)) , ! .
 go(s A:B,Ans) :- show(('03',s A:B)) , map(go,A,A2) , A\=A2 , go(s A2:B,Ans) , succ(('03',Ans)) , ! .
 go(p A:B,Ans) :- show(('04',p A:B)) , map(go,A,A2) , A\=A2 , go(p A2:B,Ans) , succ(('04',Ans)) , ! .
-go(s A:B,Ans) :- show(('05',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1) , normalized(A1:B1,A2:B2) , Ans=s A2:B2 , succ(('05',Ans)) , ! .
-go(p Zero:D,Ans) :- show(('06',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('06',Ans)) , ! .
-go(p(S),Ans) :- show(('07',p(S))) , normalized(S,S2) , go(p S2,Ans) , succ(('07',Ans)) , ! .
-go(p [s A:B]:[s C:D],Ans) :- show(('08',p A:B)) , divide(s A:B,s C:D,S) , S\=p [s A:B]:[s C:D] , go(S,Ans) , succ(('08',Ans)) , ! .
-go(p N:D,Ans) :- show(('09',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('09',Ans)) , ! .
-go(A@X,Ans) :- show(('10',A@X)) , go(A,A1) , Ans=A1@X , succ(('10',Ans)) , ! .
-go(A=X,Ans) :- show(('11',A=X)) , Max=2 , between(0,Max,N) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('11',Ans)) , ! .
-go(p N:D,Ans) :- show(('12',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('12',Ans)) , ! .
-go(X,X) :- show(('13',X)) , succ(('13',X)) , ! .
+go(p A:[],Ans) :- show(('05',p A:[])) , take(s S:M,A,R) , mem(p _:D,S) , take(F,R,R2) , mem(F,D) , distribute(F,S,S2) , distribute(F,M,M2) , go(p [s S2:M2|R2]:[],Ans) , succ(('05',Ans)) , ! .
+go(s A:B,Ans) :- show(('06',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1) , normalized(A1:B1,A2:B2) , Ans=s A2:B2 , succ(('06',Ans)) , ! .
+go(p Zero:D,Ans) :- show(('07',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('07',Ans)) , ! .
+go(p(S),Ans) :- show(('08',p(S))) , normalized(S,S2) , go(p S2,Ans) , succ(('08',Ans)) , ! .
+go(p [s A:B]:[s C:D],Ans) :- show(('09',p A:B)) , divide(s A:B,s C:D,S) , S\=p [s A:B]:[s C:D] , go(S,Ans) , succ(('09',Ans)) , ! .
+go(p N:D,Ans) :- show(('10',p N:D)) , D\=[] , expand(p N:[],E) , go(E,G) , flatfactors(G,N1) , normalized(N1:D,S) , Ans=p S , succ(('10',Ans)) , ! .
+go(A@X,Ans) :- show(('11',A@X)) , go(A,A1) , Ans=A1@X , succ(('11',Ans)) , ! .
+go(A=X,Ans) :- show(('12',A=X)) , Max=2 , between(0,Max,N) , eval(A=X,N,Ans) , ( N=Max ; an(Ans) ) , succ(('12',Ans)) , ! .
+go(p N:D,Ans) :- show(('13',p N:D)) , const(p N:D) , expand(p N:D,E) , p N:D\=E , go(E,Ans) , succ(('13',Ans)) , ! .
+go(X,X) :- show(('14',X)) , succ(('14',X)) , ! .
 
 eval(A@X=Y, _ , _) :- show(('ev',A@X=Y)) , ins(A,X,M) , M > 1 , ! , fail .
 eval(X@X=Y, _ , X) :- show(('ev',X@X=Y)) , 0/0 <- Y , ! .
