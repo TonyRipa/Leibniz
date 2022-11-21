@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.10.20
+%	Date:		2022.11.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -32,10 +32,10 @@ prepro(p A:B, p AP:B) :- shop(('05',p A:B)) , map(prepro,A,AP) , A\=AP , ! .
 prepro(p A:B, p A:BP) :- shop(('06',p A:B)) , map(prepro,B,BP) , B\=BP , ! .
 prepro(X,Ans) :- integer(X) , X>1 , shop(('07','Int')) , Y is X-1 , prepro(1+Y,Ans) , ! .
 prepro(f(X),Ans) :- shop(('08',f(X))) , prepro(X*X, Ans) , ! .
-prepro(A,Ans) :- A =.. [+|Args] , shop(('09',A)) , map(prepro,Args,L) , prepro(s L:[],Ans) , ! .
-prepro(A,Ans) :- A =.. [*|Args] , shop(('10',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
-prepro(A,Ans) :- A =.. [-|Args] , shop(('11',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
-prepro(A,Ans) :- A =.. [/|Args] , shop(('12',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
+prepro(A,Ans) :- ( A =.. ['+'|Args] ; A =.. [{},  plus:Args] ) , shop(('09',A)) , map(prepro,Args,L) , prepro(s L:[],Ans) , ! .
+prepro(A,Ans) :- ( A =.. ['*'|Args] ; A =.. [{}, times:Args] ) , shop(('10',A)) , map(prepro,Args,L) , prepro(p L:[],Ans) , ! .
+prepro(A,Ans) :- ( A =.. ['-'|Args] ; A =.. [{}, minus:Args] ) , shop(('11',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(s N:[D],Ans) , ! .
+prepro(A,Ans) :- ( A =.. ['/'|Args] ; A =.. [{},divide:Args] ) , shop(('12',A)) , map(prepro,Args,L) , rev(L,[D|N]) , prepro(p N:[D],Ans) , ! .
 prepro(A^0,Ans) :- shop(('13',A^0)) , prepro(1,Ans) , ! .
 prepro(A^N,Ans) :- integer(N) , N>0 , shop(('14',A^N)) , N2 is N-1 , prepro(A*A^N2,Ans) , ! .
 prepro(A=B,AP=BP) :- shop(('15',A=B)) , prepro(A,AP) , prepro(B,BP) , ! .
