@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2022.11.20
+%	Date:		2022.12.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0200,xfx,:).
@@ -134,7 +134,7 @@ go(A,Ans) :- show(('01',A)) , empty(A,B) , A\=B , go(B,Ans) , succ(('01',Ans)) ,
 go(A,Ans) :- show(('02',A)) ,  flat(A,B) , A\=B , go(B,Ans) , succ(('02',Ans)) , ! .
 go(s A:B,Ans) :- show(('03',s A:B)) , map(go,A,A2) , A\=A2 , go(s A2:B,Ans) , succ(('03',Ans)) , ! .
 go(p A:B,Ans) :- show(('04',p A:B)) , map(go,A,A2) , A\=A2 , go(p A2:B,Ans) , succ(('04',Ans)) , ! .
-go(p A:[],Ans) :- show(('05',p A:[])) , take(s S:M,A,R) , mem(p _:D,S) , take(F,R,R2) , mem(F,D) , distribute(F,S,S2) , distribute(F,M,M2) , go(p [s S2:M2|R2]:[],Ans) , succ(('05',Ans)) , ! .
+go(p A:B,Ans) :- show(('05',p A:B)) , take(s S:M,A,R) , mem(p _:D,S) , take(F,R,R2) , mem(F,D) , distribute(F,S,S2) , distribute(F,M,M2) , go(p [s S2:M2|R2]:B,Ans) , succ(('05',Ans)) , ! .
 go(s A:B,Ans) :- show(('06',s A:B)) , flatterms(s A:[],A1) , flatterms(s B:[],B1) , normalized(A1:B1,A2:B2) , Ans=s A2:B2 , succ(('06',Ans)) , ! .
 go(p Zero:D,Ans) :- show(('07',p Zero:D)) , mem(Z,Zero) , is0(Z) , ( mem(Z2,D) , is0(Z2) -> nan(Ans) ; Ans=s []:[] ) , succ(('07',Ans)) , ! .
 go(p(S),Ans) :- show(('08',p(S))) , normalized(S,S2) , go(p S2,Ans) , succ(('08',Ans)) , ! .
