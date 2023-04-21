@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.03.20
+%	Date:		2023.04.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -65,17 +65,27 @@ go(poly(V,X)+poly(V,Y),poly(V,Z)) :- array_sum(X,Y,Z) , ! .
 go(poly(V,X)-Y1,poly(V,Z)) :- go(Y1,poly(V,Y)) , array_sub(X,Y,Z) , ! .
 go(poly(V,X)*poly(V,Y),poly(V,Z)) :- array_mul(X,Y,Z) , ! .
 go(poly(V,X)/Y1,Ans) :- Y1=poly(V,Y) -> array_div(X,Y,Z) , Ans = poly(V,Z) ; go(Y1,poly(V,Y)) , go(poly(V,X)/poly(V,Y),Ans) , ! .
+go(N-D,Ans) :- go(N,N1) , N\=N1 , go(N1-D,Ans) , ! .
+go(N*D,Ans) :- go(N,N1) , N\=N1 , go(N1*D,Ans) , ! .
+go(N*D,Ans) :- go(D,D1) , D\=D1 , go(N*D1,Ans) , ! .
+go(N/D,Ans) :- go(N,N1) , N\=N1 , go(N1/D,Ans) , ! .
 go(X,X) .
 
+post(poly(_,Z),0) :- array_zero(Z) , ! .
 post(poly(_,[I]),I) :- ! .
 post(poly(X,[0,1]),X) :- ! .
 post(poly(X,[0,-1]),-X) :- ! .
 post(poly(X,[0,I]),I*X) :- ! .
 post(poly(X,[0,0,1]),X^2) :- ! .
 post(poly(X,[0,0,I]),I*X^2) :- ! .
-post(poly(_,Z),0) :- array_zero(Z) , ! .
 post(poly(X,[H1,H2|T]),First-Rest) :- post(poly(X,[H1]),First) , H2<0 , Neg_H2 is -H2 , post(poly(X,[0,Neg_H2|T]),Rest) , ! .
-post(poly(X,[H|T]),First+Rest) :- post(poly(X,[H]),First) , post(poly(X,[0|T]),Rest) , ! .
+post(poly(X,List),Rest) :- reverse(List,[0|T]) , reverse(T,T2) , post(poly(X,T2),Rest) , ! .
+post(poly(X,List),Rest+Last) :-
+	reverse(List,[H|T]) ,
+	length(T,Pow) ,
+	(H=1,Pow=1 -> Last=X ; (H=1 -> Last=X^Pow ; (Pow=1 -> Last=H*X ; Last=H*X^Pow))),
+	reverse(T,T2) ,
+	post(poly(X,T2),Rest) , ! .
 post(A,Ans) :- ( A =.. [Op|Args] ) , map(post,Args,L) , Ans =.. [Op|L] , ! .
 post(X,X) .
 
