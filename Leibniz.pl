@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.07.20
+%	Date:		2023.08.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -17,6 +17,10 @@ pre(X,X) :- ! .
 
 go(poly(V,X)+poly(V,Y),poly(V,Z)) :- sparse_sum(X,Y,Z) , ! .
 go(poly(V1,X)+poly(V2,Y),Ans) :- poly_sum(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(Poly1+Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_sum(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(poly(V,X)-poly(V,Y),poly(V,Z)) :- sparse_sub(X,Y,Z) , ! .
+go(poly(V1,X)-poly(V2,Y),Ans) :- poly_sub(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(Poly1-Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_sub(poly(V1,X),poly(V2,Y),Ans) , ! .
 go(X,X) .
 
 post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
@@ -97,6 +101,8 @@ sparse_div_h(Num,Den,C,Ans) :-
 
 sparse_sum(A,B,Ans) :- append(A,B,C), normalize(C,Ans) .
 
+sparse_negate(Sparse,New_Sparse) :- map([[V,K],[-V,K]]>>true, Sparse, New_Sparse) , ! .
+
 normalize(Sparse,Ans) :-
 	map([[A,B],[B,A]]>>true, Sparse, Rev_Sparse),
 	sort(1,@=<,Rev_Sparse,Rev_Sorted_Sparse) ,
@@ -133,9 +139,19 @@ union(List1,List2,Set) :-
 
 %%%%%%%%%%%%%%%%%%%%	Polynomial	  Operations		%%%%%%%%%%%%%%%%%%%%%%
 
+poly_negate(Poly,NewPoly) :-
+	Poly = poly(Base,Sparse) ,
+	sparse_negate(Sparse,Sparse2) ,
+	NewPoly = poly(Base,Sparse2) , ! .
+
 poly_sum(P1,P2,Ans) :-
 	align(P1,P2,poly(B,S1),poly(B,S2)) ,
 	sparse_sum(S1,S2,S) ,
+	Ans = poly(B,S) , ! .
+
+poly_sub(P1,P2,Ans) :-
+	align(P1,P2,poly(B,S1),poly(B,S2)) ,
+	sparse_sub(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
 
 align(Poly1,Poly2,poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
