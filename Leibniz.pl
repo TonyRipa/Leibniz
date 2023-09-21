@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.08.20
+%	Date:		2023.09.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -163,8 +163,8 @@ align(Poly1,Poly2,poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
 	normalize(Sparse1,NewSparse1) ,
 	=(Sparse2,NewSparse2) .
 
-alignpoly2base(Poly,[X],NewPoly) :-
-	Poly = poly([X],_) ,
+alignpoly2base(Poly,X,NewPoly) :-
+	Poly = poly(X,_) ,
 	NewPoly = Poly , ! .
 
 alignpoly2base(Poly,[X,Y],NewPoly) :-
