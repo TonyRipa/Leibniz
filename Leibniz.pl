@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.09.20
+%	Date:		2023.10.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -119,6 +119,7 @@ trim([],[]) :- ! .
 trim([[0,_]|T],T2) :- trim(T,T2) , ! .
 trim([H|T],[H|T2]) :- trim(T,T2) , ! .
 
+pad0([],[]) :- ! .
 pad0([[Coef,Pow]],[[Coef,[0|Pow]]]) :- ! .
 pad0([H|T],Ans) :-
 	pad0([H],PH) ,
@@ -130,6 +131,12 @@ pad1([H|T],Ans) :-
 	pad1([H],PH) ,
 	pad1(T,PT) ,
 	append(PH,PT,Ans) , ! .
+
+swap([[Coef,[Pow1,Pow2]]],[[Coef,[Pow2,Pow1]]]) :- ! .
+swap([H|T],Ans) :-
+	swap([H],SH) ,
+	swap(T,ST) ,
+	append(SH,ST,Ans) , ! .
 
 %%%%%%%%%%%%%%%%%%%%	Set			  Operations		%%%%%%%%%%%%%%%%%%%%%%
 
@@ -175,4 +182,9 @@ alignpoly2base(Poly,[X,Y],NewPoly) :-
 alignpoly2base(Poly,[X,Y],NewPoly) :-
 	Poly = poly([Y],OldSparse) ,
 	pad0(OldSparse,NewSparse) ,
+	NewPoly = poly([X,Y], NewSparse) , ! .
+
+alignpoly2base(Poly,[X,Y],NewPoly) :-
+	Poly = poly([Y,X],OldSparse) ,
+	swap(OldSparse,NewSparse) ,
 	NewPoly = poly([X,Y], NewSparse) , ! .
