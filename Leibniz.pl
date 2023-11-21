@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.10.20
+%	Date:		2023.11.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -21,13 +21,17 @@ go(Poly1+Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_sum(po
 go(poly(V,X)-poly(V,Y),poly(V,Z)) :- sparse_sub(X,Y,Z) , ! .
 go(poly(V1,X)-poly(V2,Y),Ans) :- poly_sub(poly(V1,X),poly(V2,Y),Ans) , ! .
 go(Poly1-Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_sub(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(poly(V,X)*poly(V,Y),poly(V,Z)) :- sparse_mul(X,Y,Z) , ! .
+go(poly(V1,X)*poly(V2,Y),Ans) :- poly_mul(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(Poly1*Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_mul(poly(V1,X),poly(V2,Y),Ans) , ! .
 go(X,X) .
 
 post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
 post(poly(_,[[I,[]]]),I) :- ! .
-post(poly([X],[[V,[Pow]]  ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
-post(poly([X,_],[[V,[Pow,0]]  ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
-post(poly([_,X],[[V,[0,Pow]]  ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
+post(poly([X],[[V,[Pow]]    ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
+post(poly([X,_],[[V,[Pow,0]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
+post(poly([_,X],[[V,[0,Pow]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
+post(poly([X,Y],[[V,[P1,P2]]]),Ans) :- ( P1 =1 -> XPow=X ; XPow=X^P1  ) , ( P2=1 -> YPow=Y ; YPow=Y^P2 ) , ( V=1 -> Ans=XPow*YPow ; V= -1 -> Ans= -XPow*YPow ; Ans=V*XPow*YPow ) , ! .
 post(poly(B,[[V,PV]|T]),Ans) :- num_abs(V,V2) , post(poly(B,[[V2,PV]]),H) , post(poly(B,T),T2) , (num_pos(V) -> Ans = T2+H ; Ans = T2-H) , ! .
 post(X,X) .
 
@@ -49,13 +53,15 @@ num_pos(X) :- num_abs(X,X) , ! .
 
 map(_,[],[]). map(F,[H|T],[H1|T1]) :- call(F,H,H1) , map(F,T,T1) .
 
+array_add([],X,X) :- ! .
+array_add(X,[],X) :- ! .
+array_add([H1|T1],[H2|T2],[H3|T3]) :- H3 is H1+H2 , array_add(T1,T2,T3) .
+
 %%%%%%%%%%%%%%%%%%%%	Sparse	Array Operations 1		%%%%%%%%%%%%%%%%%%%%%%
 
-sparse_sub(A,B,Ans) :- negate(B,Neg_B) , sparse_sum(A,Neg_B,Ans) , ! .
-
-sparse_mul([],_,[]) :- ! .
-sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,Ko is Ki+K),List,Ans) , ! .
-sparse_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
+sparse1_mul([],_,[]) :- ! .
+sparse1_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,Ko is Ki+K),List,Ans) , ! .
+sparse1_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
 
 sparse1_sum(A,B,Ans) :- append(A,B,C), normalize1(C,Ans) .
 
@@ -101,7 +107,13 @@ sparse_div_h(Num,Den,C,Ans) :-
 
 sparse_sum(A,B,Ans) :- append(A,B,C), normalize(C,Ans) .
 
+sparse_sub(A,B,Ans) :- negate(B,Neg_B) , sparse_sum(A,Neg_B,Ans) , ! .
+
 sparse_negate(Sparse,New_Sparse) :- map([[V,K],[-V,K]]>>true, Sparse, New_Sparse) , ! .
+
+sparse_mul([],_,[]) :- ! .
+sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,array_add(Ki,K,Ko)),List,Ans) , ! .
+sparse_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
 
 normalize(Sparse,Ans) :-
 	map([[A,B],[B,A]]>>true, Sparse, Rev_Sparse),
@@ -126,6 +138,7 @@ pad0([H|T],Ans) :-
 	pad0(T,PT) ,
 	append(PH,PT,Ans) , ! .
 
+pad1([],[]) :- ! .
 pad1([[Coef,Pow]],[[Coef,Pow2]]) :- reverse([0|Pow],Pow2) , ! .
 pad1([H|T],Ans) :-
 	pad1([H],PH) ,
@@ -159,6 +172,11 @@ poly_sum(P1,P2,Ans) :-
 poly_sub(P1,P2,Ans) :-
 	align(P1,P2,poly(B,S1),poly(B,S2)) ,
 	sparse_sub(S1,S2,S) ,
+	Ans = poly(B,S) , ! .
+
+poly_mul(P1,P2,Ans) :-
+	align(P1,P2,poly(B,S1),poly(B,S2)) ,
+	sparse_mul(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
 
 align(Poly1,Poly2,poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
