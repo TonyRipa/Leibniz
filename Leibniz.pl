@@ -1,13 +1,13 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2023.12.20
+%	Date:		2024.01.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
 :- op(0600,fy,*).
 
 pre(X,poly([X],[[1,[1]]])) :- atom(X) , ! .
-pre(I,poly(_,[[I,[]]])) :- integer(I) , ! .
+pre(I,poly(_,[[I,[0]]])) :- integer(I) , ! .
 pre(+X,Ans) :- pre(X,Ans) , ! .
 pre(-X,Ans) :- pre(0-X,Ans) , ! .
 pre(*X,Ans) :- pre(X,Ans) , ! .
@@ -31,6 +31,7 @@ go(X,X) .
 
 post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
 post(poly(_,[[I,[]]]),I) :- ! .
+post(poly(_,[[I,[0]]]),I) :- ! .
 post(poly([X],[[V,[Pow]]    ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
 post(poly([X,_],[[V,[Pow,0]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
 post(poly([_,X],[[V,[0,Pow]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
