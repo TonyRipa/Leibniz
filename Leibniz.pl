@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.01.20
+%	Date:		2024.02.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -185,9 +185,14 @@ swap([H|T],Ans) :-
 
 %%%%%%%%%%%%%%%%%%%%	Set			  Operations		%%%%%%%%%%%%%%%%%%%%%%
 
-union(List1,List2,Set) :-
+union(List1,List2,Ans) :-
 	append(List1,List2,List) ,
-	list_to_set(List,Set) .
+	list_to_set(List,Set) ,
+	set_clean(Set,Ans) .
+
+set_clean([],[]) :- ! .
+set_clean([H|T],T2) :- var(H) , set_clean(T,T2) , ! .
+set_clean([H|T],[H|T2]) :- not(var(H)) , set_clean(T,T2) , ! .
 
 %%%%%%%%%%%%%%%%%%%%	Polynomial	  Operations		%%%%%%%%%%%%%%%%%%%%%%
 
