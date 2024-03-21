@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.02.20
+%	Date:		2024.03.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -32,7 +32,7 @@ go(X,X) .
 post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
 post(poly(_,[[I,[]]]),I) :- ! .
 post(poly(_,[[I,[0]]]),I) :- ! .
-post(poly([X],[[V,[Pow]]    ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
+post(poly([X|_],[[V,[Pow]]  ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
 post(poly([X,_],[[V,[Pow,0]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
 post(poly([_,X],[[V,[0,Pow]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
 post(poly([X,Y],[[V,[P1,P2]]]),Ans) :- ( P1 =1 -> XPow=X ; XPow=X^P1  ) , ( P2=1 -> YPow=Y ; YPow=Y^P2 ) , ( V=1 -> Ans=XPow*YPow ; V= -1 -> Ans= -XPow*YPow ; Ans=V*XPow*YPow ) , ! .
