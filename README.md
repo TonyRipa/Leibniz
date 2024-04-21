@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2024.03.20
+Date:	2024.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -145,6 +145,8 @@ Live Demo of Version 69 at <a href='https://swish.swi-prolog.org/p/QgHKetvy.pl'>
 
 Live Demo of Version 70 at <a href='https://swish.swi-prolog.org/p/ovdfSdZf.pl'>https://swish.swi-prolog.org/p/ovdfSdZf.pl</a>
 
+Live Demo of Version 71 at <a href='https://swish.swi-prolog.org/p/pwSNxwxs.pl'>https://swish.swi-prolog.org/p/pwSNxwxs.pl</a>
+
 ## Leibniz
 
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
@@ -230,6 +232,26 @@ The semantics of arithmetic is something of a foundation. The semantics of norma
 One reason to think that we may have gotten it backwards is by thinking about number and quantity. Numbers are things like 5 or 7. Numbers are particular quantities. In normal algebra, we have variables. We think of them as varying over different numbers. Variables vary over particular quantities. The notion of not being a particular quantity is constructed as varying over particular quantities. This does not quite capture the notion of not being particular. This construction leads to confusions about things like x/x. Instead, we may think of a generic quantity. This generic quantity is not standing in for particular quantities. Generic quantities are not generic particular quantities. The particularity fails to help, and helps to fail. The generic quantity is just that: a quantity. It may have a name, like x. However, this does not make it particular. Furthermore, the rules of how to manipulate quantities that are not particular, is not constrained by the rules of how to manipulate quantities that are particular.
 
 In the alternative, rather than changing the semantics of algebra, we can change the semantics of arithmetic. Earlier, we spoke about parsing x/x@x=0. We can parse it  as (x@x=0)/(x@x=0) then 0/0. We can parse it as 1@x=0 then 1. In this 2 branch tree we avoid the 0/0 branch to get 1. We formalized this at one point with directional parses → instead of bidirectional =. We could try fixing arithmetic this way then basing algebra on it. 1 → 0/0 and 0 → 0/0 but not 0/0 → something. Perhaps, it is not entirely important if we fix algebra, and then base arithmetic on the fixed algebra, or if we fix arithmetic and base algebra on the new arithmetic. It is important that we fix. We could also fix both and merely have them compatible, and perhaps interderivable without the need of declaring one as the foundation.
+
+#### Extension Functions
+
+We may distinguish between objects, and the measures of those objects. We might have a particular line-segment S. The length of S might be L. S and L are different types. S may be of type geometric object. L may be of type real number. Since L is a real number, and since 0 is a real number, it may be that L=0. Since 0 is not a geometric object, it cannot be the case that S=0. So, while division by L could result in division by zero, division by S can not. Consider an example.
+
+let x,h be line-segments
+
+length(h) = H = 0
+
+length(x) = X
+
+m = len((sqr(x+h)-sqr(x))/h) = len(((x+h)^2-x^2)/h) = len((x^2+2xh+h^2-x^2)/h) = len((2xh+h^2)/h) = len(2x+h) = len(2x)+len(h) = len(2x)+H = len(2x)+0 = len(2x) = 2 \* len(x) = 2 \* X = 2X
+
+While it may be thought that valuation functions like length track some intrinsic property of the object, it may be the case that this idea is weakened once we consider two different measures, like inches or centimeters. It may be further weakened thinking about valuation functions like cost where an apple may be assigned a cost of $2, but on customer appreciation day be assigned a cost of $0. Valuation functions may be extrinsic like the pleasure of the apple. Valuation functions may come into and out of existence, to suit different needs at different times.
+
+This suggests that something like apple arithmetic may be done independent of some particular valuation function that may be constructed and applied at a later time. Though we could imagine designing constructions where the apple arithmetic is incompatible with the apple valuation function. Perhaps 1 apple + 1 apple = 2 apples , but the cost of 1 apple + cost of 1 apple ≠ cost of 2 apples . We could ensure compatibility by having both follow certain principles, e.g. linearity.
+
+We might imagine general rules like a banana always counts twice as much as an apple. This would remain true even on customer appreciation day when the cost of an apple is $0. Just because the valuation function cost for both apple and banana on customer appreciation day is 0, this would not change the general rule that a banana always counts twice as much as an apple. It would still be the case that a banana always counts twice as much as an apple. If asked how much more a banana counts than an apple on customer appreciation day, the only answer would be 2. Any other answer would be false.
+
+When we think about line-segments, something similar happens. We may have line-segments like h. h/h = 1. If a valuation function is created that associates the line-segment h with the real number 0, then nothing changes. h/h = 1 is still true, while h/h = 2 would still be (and always would be) false. This is in line with the previous customer appreciation day example.
 
 ## Transcendental
 

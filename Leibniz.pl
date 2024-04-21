@@ -1,13 +1,13 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.03.20
+%	Date:		2024.04.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
 :- op(0600,fy,*).
 
 pre(X,poly([X],[[1,[1]]])) :- atom(X) , ! .
-pre(I,poly(_,[[I,[0]]])) :- integer(I) , ! .
+pre(I,poly([],[[I,[0]]])) :- integer(I) , ! .
 pre(+X,Ans) :- pre(X,Ans) , ! .
 pre(-X,Ans) :- pre(0-X,Ans) , ! .
 pre(*X,Ans) :- pre(X,Ans) , ! .
@@ -216,7 +216,7 @@ poly_mul(P1,P2,Ans) :-
 	sparse_mul(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
 
-poly_div(P1,P2,Ans) :-	%	+2023.12
+poly_div(P1,P2,Ans) :-
 	align(P1,P2,poly(B,S1),poly(B,S2)) ,
 	sparse_div(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
@@ -229,6 +229,10 @@ align(Poly1,Poly2,poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
 	alignpoly2base(Poly2,Base,poly(Base,Sparse2)) ,
 	normalize(Sparse1,NewSparse1) ,
 	=(Sparse2,NewSparse2) .
+
+alignpoly2base(Poly,X,NewPoly) :-
+	Poly = poly([], Sparse) ,
+	NewPoly = poly(X, Sparse) , ! .
 
 alignpoly2base(Poly,X,NewPoly) :-
 	Poly = poly(X,_) ,
