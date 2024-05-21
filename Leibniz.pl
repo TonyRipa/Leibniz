@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.04.20
+%	Date:		2024.05.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -33,11 +33,13 @@ post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
 post(poly(_,[[I,[]]]),I) :- ! .
 post(poly(_,[[I,[0]]]),I) :- ! .
 post(poly([X|_],[[V,[Pow]]  ]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
-post(poly([X,_],[[V,[Pow,0]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
-post(poly([_,X],[[V,[0,Pow]]]),Ans) :- ( Pow=1 -> XPow=X ; XPow=X^Pow ) , ( V=1 -> Ans=XPow ; V= -1 -> Ans= -XPow ; Ans=V*XPow ) , ! .
-post(poly([X,Y],[[V,[P1,P2]]]),Ans) :- ( P1 =1 -> XPow=X ; XPow=X^P1  ) , ( P2=1 -> YPow=Y ; YPow=Y^P2 ) , ( V=1 -> Ans=XPow*YPow ; V= -1 -> Ans= -XPow*YPow ; Ans=V*XPow*YPow ) , ! .
+post(poly(B,[[V,P]]),Ans) :- term(B,P,T) , ( V=1 -> Ans=T ; V= -1 -> Ans= -T ; Ans=V*T ) , ! .
 post(poly(B,[[V,PV]|T]),Ans) :- num_abs(V,V2) , post(poly(B,[[V2,PV]]),H) , post(poly(B,T),T2) , (num_pos(V) -> Ans = T2+H ; Ans = T2-H) , ! .
 post(X,X) .
+
+term(B,P,Ans) :- B=[] , P=[] , Ans = 1 , ! .
+term(B,P,Ans) :- B=[BH|BT] , P=[PH|PT] , term(BT,PT,1) , ( PH=0 -> Ans = 1 ; PH=1 -> Ans = BH ; Ans = BH^PH ) , ! .
+term(B,P,Ans) :- B=[BH|BT] , P=[PH|PT] , term(BT,PT,TT) , ( PH=0 -> Ans = TT ; PH=1 -> Ans = BH*TT ; Ans = BH^PH*TT ) , ! .
 
 simp(X,Ans) :- pre(X,Pre) , go(Pre,Go) , post(Go,Ans) .
 
@@ -120,9 +122,9 @@ sparse1_div_h(Num,Den,C,Ans) :-
 
 sparse_sum(A,B,Ans) :- append(A,B,C), normalize(C,Ans) .
 
-sparse_sub(A,B,Ans) :- negate(B,Neg_B) , sparse_sum(A,Neg_B,Ans) , ! .
+sparse_sub(A,B,Ans) :- sparse_negate(B,Neg_B) , sparse_sum(A,Neg_B,Ans) , ! .
 
-sparse_negate(Sparse,New_Sparse) :- map([[V,K],[-V,K]]>>true, Sparse, New_Sparse) , ! .
+sparse_negate(Sparse,New_Sparse) :- map([[V,K],[NV,K]]>>is(NV,-V), Sparse, New_Sparse) , ! .
 
 sparse_mul([],_,[]) :- ! .
 sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,array_add(Ki,K,Ko)),List,Ans) , ! .
@@ -170,19 +172,6 @@ pad0([H|T],Ans) :-
 	pad0(T,PT) ,
 	append(PH,PT,Ans) , ! .
 
-pad1([],[]) :- ! .
-pad1([[Coef,Pow]],[[Coef,Pow2]]) :- reverse([0|Pow],Pow2) , ! .
-pad1([H|T],Ans) :-
-	pad1([H],PH) ,
-	pad1(T,PT) ,
-	append(PH,PT,Ans) , ! .
-
-swap([[Coef,[Pow1,Pow2]]],[[Coef,[Pow2,Pow1]]]) :- ! .
-swap([H|T],Ans) :-
-	swap([H],SH) ,
-	swap(T,ST) ,
-	append(SH,ST,Ans) , ! .
-
 %%%%%%%%%%%%%%%%%%%%	Set			  Operations		%%%%%%%%%%%%%%%%%%%%%%
 
 union(List1,List2,Ans) :-
@@ -221,34 +210,44 @@ poly_div(P1,P2,Ans) :-
 	sparse_div(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
 
-align(Poly1,Poly2,poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
-	Poly1 = poly(Base1,_) ,
-	Poly2 = poly(Base2,_) ,
+%%%%%%%%%%%%%%%%%%%%	Polynomial	Align	Operations	%%%%%%%%%%%%%%%%%%%%%%
+
+align(poly(Base1,OldSparse1),poly(Base2,OldSparse2),poly(Base,NewSparse1),poly(Base,NewSparse2)) :-
 	union(Base1,Base2,Base) ,
-	alignpoly2base(Poly1,Base,poly(Base,Sparse1)) ,
-	alignpoly2base(Poly2,Base,poly(Base,Sparse2)) ,
+	alignsparse2base(OldSparse1,Base1,Base,Sparse1) ,
+	alignsparse2base(OldSparse2,Base2,Base,Sparse2) ,
 	normalize(Sparse1,NewSparse1) ,
 	=(Sparse2,NewSparse2) .
 
-alignpoly2base(Poly,X,NewPoly) :-
-	Poly = poly([], Sparse) ,
-	NewPoly = poly(X, Sparse) , ! .
+alignsparse2base(Sparse,[],[_],Sparse) :-	! .
+alignsparse2base(Sparse,[Y],[_,Y],NewSparse) :- pad0(Sparse,NewSparse) , ! .
+alignsparse2base(Sparse,Type1,Type2,NewSparse) :- castmap(Sparse,Type1,Type2,NewSparse) , ! .
 
-alignpoly2base(Poly,X,NewPoly) :-
-	Poly = poly(X,_) ,
-	NewPoly = Poly , ! .
+castmap([],_,_,[]) :- ! .
+castmap([H|T],Type1,Type2,[H2|T2]) :-
+	H = [Coef,Indices] ,
+	cast(Indices,Type1,Type2,Indices2) ,	
+	H2 = [Coef,Indices2] ,
+	castmap(T,Type1,Type2,T2) , ! .
 
-alignpoly2base(Poly,[X,Y],NewPoly) :-
-	Poly = poly([X],OldSparse) ,
-	pad1(OldSparse,NewSparse) ,
-	NewPoly = poly([X,Y], NewSparse) , ! .
+cast(Data,Type1,Type2,DataPart) :-
+	Type1 = [Elem1] ,
+	length(Type2,N) ,
+	length(DataPart,N) ,
+	cast1(Data,Elem1,Type1,Type2,DataPart) ,
+	varto0(DataPart) , ! .
+cast(Data,Type1,Type2,DataPart) :-
+	Type1 = [Elem1,Elem2] ,
+	length(Type2,N) ,
+	length(DataPart,N) ,
+	cast1(Data,Elem1,Type1,Type2,DataPart) ,
+	cast1(Data,Elem2,Type1,Type2,DataPart) ,
+	varto0(DataPart) , ! .
 
-alignpoly2base(Poly,[X,Y],NewPoly) :-
-	Poly = poly([Y],OldSparse) ,
-	pad0(OldSparse,NewSparse) ,
-	NewPoly = poly([X,Y], NewSparse) , ! .
+cast1(Data,Elem1,Type1,Type2,DataPart) :-
+	nth0(I1,Type1   ,Elem1) ,		%	Find Index1
+	nth0(I1,Data    ,Datum) ,		%	Find Datum
+	nth0(I2,Type2   ,Elem1) ,		%	Find Index2
+	nth0(I2,DataPart,Datum) , ! .	%	Set  Datum
 
-alignpoly2base(Poly,[X,Y],NewPoly) :-
-	Poly = poly([Y,X],OldSparse) ,
-	swap(OldSparse,NewSparse) ,
-	NewPoly = poly([X,Y], NewSparse) , ! .
+varto0(L) :- map([E,E]>>(E=0;true), L, _) , ! .
