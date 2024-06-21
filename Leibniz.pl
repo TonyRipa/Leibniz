@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.05.20
+%	Date:		2024.06.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -134,6 +134,7 @@ sparse_div(Num,Den,Ans) :- length(Num,Len) , succ(Len,Iter) , sparse_div_h(Num,D
 
 sparse_div_h(_Num,_Den,0,[]) :- ! .
 sparse_div_h([],Den,C,Ans) :- sparse_div_h([[0,[0]]],Den,C,Ans) , ! .
+sparse_div_h(Num,[],C,Ans) :- sparse_div_h(Num,[[0,[0]]],C,Ans) , ! .
 sparse_div_h(Num,Den,C,Ans) :-
 	last(Num,[N_Coef,N_Pow]),
 	last(Den,[D_Coef,D_Pow]),
@@ -217,7 +218,8 @@ align(poly(Base1,OldSparse1),poly(Base2,OldSparse2),poly(Base,NewSparse1),poly(B
 	alignsparse2base(OldSparse1,Base1,Base,Sparse1) ,
 	alignsparse2base(OldSparse2,Base2,Base,Sparse2) ,
 	normalize(Sparse1,NewSparse1) ,
-	=(Sparse2,NewSparse2) .
+	normalize(Sparse2,NewSparse2) ,
+	=(NewSparse2,NewSparse2) .
 
 alignsparse2base(Sparse,[],[_],Sparse) :-	! .
 alignsparse2base(Sparse,[Y],[_,Y],NewSparse) :- pad0(Sparse,NewSparse) , ! .
