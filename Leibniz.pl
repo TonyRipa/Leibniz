@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.06.20
+%	Date:		2024.07.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -27,6 +27,7 @@ go(Poly1*Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_mul(po
 go(poly(V,X)/poly(V,Y),poly(V,Z)) :- sparse_div(X,Y,Z) , ! .
 go(poly(V1,X)/poly(V2,Y),Ans) :- poly_div(poly(V1,X),poly(V2,Y),Ans) , ! .
 go(Poly1/Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_div(poly(V1,X),poly(V2,Y),Ans) , ! .
+go(Poly1^Poly2,Ans) :- go(Poly1,poly(V1,X)) , go(Poly2,poly(V2,Y)) , poly_pow(poly(V1,X),poly(V2,Y),Ans) , ! .
 go(X,X) .
 
 post(poly(_,Sparse),0) :- normalize(Sparse,[]) , ! .
@@ -72,52 +73,6 @@ array_trim(X,Ans) :- reverse(X,XR) , array_trim_front(XR,AnsR) , reverse(AnsR,An
 array_trim_front([0|T],Ans) :- array_trim_front(T,Ans) , ! .
 array_trim_front(X,X) :- ! .
 
-%%%%%%%%%%%%%%%%%%%%	Sparse	Array Operations 1		%%%%%%%%%%%%%%%%%%%%%%
-
-sparse1_mul([],_,[]) :- ! .
-sparse1_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,Ko is Ki+K),List,Ans) , ! .
-sparse1_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
-
-sparse1_sum(A,B,Ans) :- append(A,B,C), normalize1(C,Ans) .
-
-negate([],[]) :- ! .
-negate([[V,K]|T],[[Neg_V,K]|T2]) :- Neg_V is -V , negate(T,T2) , ! .
-
-normalize1(Sparse,Ans) :-
-	map([[A,B],[B,A]]>>true, Sparse, Rev_Sparse),
-	sort(1,@=<,Rev_Sparse,Rev_Sorted_Sparse) ,
-	map([[A,B],[B,A]]>>true, Rev_Sorted_Sparse, Sorted_Sparse),
-	combine_like_terms1(Sorted_Sparse,Combined) ,
-	trim1(Combined,Ans) .
-
-combine_like_terms1([],[]) :- ! .
-combine_like_terms1([X],[X]) :- ! .
-combine_like_terms1([[V1,K],[V2,K]|T], [[V,K]|T2]) :- V is V1+V2 , combine_like_terms1(T,T2) , ! .
-combine_like_terms1([H|T], [H|T2]) :- combine_like_terms1(T,T2) , ! .
-
-trim1([],[]) :- ! .
-trim1([[0,_]|T],T2) :- trim1(T,T2) , ! .
-trim1([H|T],[H|T2]) :- trim1(T,T2) , ! .
-
-sparse1_div(Num,Den,Ans) :- length(Num,Len) , succ(Len,Iter) , sparse1_div_h(Num,Den,Iter,Ans).
-
-sparse1_div_h(_Num,_Den,0,[]) :- ! .
-sparse1_div_h([],Den,C,Ans) :- sparse1_div_h([[0,0]],Den,C,Ans) , ! .
-sparse1_div_h(Num,Den,C,Ans) :-
-	last(Num,[N_Coef,N_Pow]),
-	last(Den,[D_Coef,D_Pow]),
-	num_div(N_Coef,D_Coef,Q_Coef),
-	Q_Pow is N_Pow - D_Pow,
-	Quotient = [[Q_Coef,Q_Pow]],
-	(
-		D_Coef = 0 -> Ans = Quotient;
-		sparse1_mul(Quotient,Den,Temp2),
-		sparse1_sub(Num,Temp2,Remainder),
-		C1 is C-1,
-		sparse1_div_h(Remainder,Den,C1,Q2),
-		sparse1_sum(Quotient,Q2,Ans)
-	).
-
 %%%%%%%%%%%%%%%%%%%%	Sparse	Array Operations		%%%%%%%%%%%%%%%%%%%%%%
 
 sparse_sum(A,B,Ans) :- append(A,B,C), normalize(C,Ans) .
@@ -129,6 +84,8 @@ sparse_negate(Sparse,New_Sparse) :- map([[V,K],[NV,K]]>>is(NV,-V), Sparse, New_S
 sparse_mul([],_,[]) :- ! .
 sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,array_add(Ki,K,Ko)),List,Ans) , ! .
 sparse_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
+
+sparse_pow(Base,[[2,[0]]],Ans) :- sparse_mul(Base,Base,Ans) , ! .
 
 sparse_div(Num,Den,Ans) :- length(Num,Len) , succ(Len,Iter) , sparse_div_h(Num,Den,Iter,Ans).
 
@@ -209,6 +166,11 @@ poly_mul(P1,P2,Ans) :-
 poly_div(P1,P2,Ans) :-
 	align(P1,P2,poly(B,S1),poly(B,S2)) ,
 	sparse_div(S1,S2,S) ,
+	Ans = poly(B,S) , ! .
+
+poly_pow(P1,P2,Ans) :-
+	align(P1,P2,poly(B,S1),poly(B,S2)) ,
+	sparse_pow(S1,S2,S) ,
 	Ans = poly(B,S) , ! .
 
 %%%%%%%%%%%%%%%%%%%%	Polynomial	Align	Operations	%%%%%%%%%%%%%%%%%%%%%%

@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2024.06.20
+Date:	2024.07.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -151,6 +151,8 @@ Live Demo of Version 72 at <a href='https://swish.swi-prolog.org/p/JqmdTKME.pl'>
 
 Live Demo of Version 73 at <a href='https://swish.swi-prolog.org/p/JACIzlXh.pl'>https://swish.swi-prolog.org/p/JACIzlXh.pl</a>
 
+Live Demo of Version 74 at <a href='https://swish.swi-prolog.org/p/nklbrjVD.pl'>https://swish.swi-prolog.org/p/nklbrjVD.pl</a>
+
 ## Leibniz
 
 <code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
@@ -256,6 +258,8 @@ This suggests that something like apple arithmetic may be done independent of so
 We might imagine general rules like a banana always counts twice as much as an apple. This would remain true even on customer appreciation day when the cost of an apple is $0. Just because the valuation function cost for both apple and banana on customer appreciation day is 0, this would not change the general rule that a banana always counts twice as much as an apple. It would still be the case that a banana always counts twice as much as an apple. If asked how much more a banana counts than an apple on customer appreciation day, the only answer would be 2. Any other answer would be false.
 
 When we think about line-segments, something similar happens. We may have line-segments like h. h/h = 1. If a valuation function is created that associates the line-segment h with the real number 0, then nothing changes. h/h = 1 is still true, while h/h = 2 would still be (and always would be) false. This is in line with the previous customer appreciation day example.
+
+Similarly, if it is possible to lay 2 copies of line-segment x end-to-end, and if this is the same as line-segment y, then we have that y = x + x (or y = 2\*x). This is true no matter what length(x) or length(y) is. Furthermore, if y = 2\*x, then y/x = 2. Again this is independent of any valuation function of x or y.
 
 ## Transcendental
 
