@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.07.20
+%	Date:		2024.08.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -85,6 +85,7 @@ sparse_mul([],_,[]) :- ! .
 sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,array_add(Ki,K,Ko)),List,Ans) , ! .
 sparse_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
 
+sparse_pow(Base,[[1,[0]]],Ans) :- Ans = Base , ! .
 sparse_pow(Base,[[2,[0]]],Ans) :- sparse_mul(Base,Base,Ans) , ! .
 
 sparse_div(Num,Den,Ans) :- length(Num,Len) , succ(Len,Iter) , sparse_div_h(Num,Den,Iter,Ans).
@@ -183,6 +184,7 @@ align(poly(Base1,OldSparse1),poly(Base2,OldSparse2),poly(Base,NewSparse1),poly(B
 	normalize(Sparse2,NewSparse2) ,
 	=(NewSparse2,NewSparse2) .
 
+alignsparse2base(Sparse,[],[],Sparse) :-	! .
 alignsparse2base(Sparse,[],[_],Sparse) :-	! .
 alignsparse2base(Sparse,[Y],[_,Y],NewSparse) :- pad0(Sparse,NewSparse) , ! .
 alignsparse2base(Sparse,Type1,Type2,NewSparse) :- castmap(Sparse,Type1,Type2,NewSparse) , ! .
