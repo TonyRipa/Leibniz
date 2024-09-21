@@ -1,6 +1,6 @@
 
 %	Author:		Anthony John Ripa
-%	Date:		2024.08.20
+%	Date:		2024.09.20
 %	Leibniz:	A Rule System for Expressions
 
 :- op(0500,fy,/).
@@ -85,6 +85,7 @@ sparse_mul([],_,[]) :- ! .
 sparse_mul([[V,K]],List,Ans) :- map({V,K}/[[Vi,Ki],[Vo,Ko]]>>(Vo is Vi*V,array_add(Ki,K,Ko)),List,Ans) , ! .
 sparse_mul([H|T],List,Ans) :- sparse_mul([H],List,First) , sparse_mul(T,List,Rest) , sparse_sum(First,Rest,Ans) , ! .
 
+sparse_pow( _  ,[       ],Ans) :- Ans = [[1,[0]]] , ! .
 sparse_pow(Base,[[1,[0]]],Ans) :- Ans = Base , ! .
 sparse_pow(Base,[[2,[0]]],Ans) :- sparse_mul(Base,Base,Ans) , ! .
 
