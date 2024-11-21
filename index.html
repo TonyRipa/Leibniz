@@ -1,0 +1,99 @@
+
+<!--
+	Author: Anthony John Ripa
+	Date:	11/17/2024
+	Demo for Leibniz: A Rule System for Expressions
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Leibniz</title>
+		<script src="https://cdn.jsdelivr.net/npm/tau-prolog@0.3.4/modules/core.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.2/math.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.6/underscore-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.30.0/plotly.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+		<script src="https://unpkg.com/gojs@3.0.9/release/go.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/digit.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/rational.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/complex.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/rationalcomplex.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/wholeplacevalue.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/placevalueratio.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/abstractpolynomial.js"></script>
+		<script src="laplacering.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/polynomial1.js"></script>
+		<script src="https://tonyripa.github.io/PlaceValue/polynomialratio1.js"></script>
+		<script src="expression.js"></script>
+		<script src="newton.js"></script>
+		<script src="Lisp.js"></script>
+		<script src="model.js"></script>
+		<script src="frame.js"></script>
+		<script src="plot.js"></script>
+		<script src="helper.js"></script>
+		<script src="stats.js"></script>
+		<script src="data.js"></script>
+		<script src="ui.js"></script>
+	</head>
+	<body>
+		<center>
+			<h1>Leibniz</h1>
+			<select onchange='$("#netstr").val($(this).val())'>
+				<optgroup label='Algebra'>
+					<option>input,data.prog→prolog</option>
+					<option>datas.eqn→input→eq2json→json2net→net2json→json2eq→solve</option>
+					<option>datas.eqn→input→network;input→solve</option>
+					<option>datas.expr→input→sample→plot1;sample→regress</option>
+					<option>datas.expr→input→laplace→invlaplace</option>
+					<option>datas.expr→input→iegf→egf</option>
+					<option>datas.expr→input→trigpoly→polytrig</option>
+				</optgroup>
+				<optgroup label='Bias'>
+					<optgroup label='&nbsp;&nbsp;&nbsp;&nbsp;Mediator'>
+						<option>datas.sym→inputbig→plot23</option>
+						<option>datas.sym→inputbig→plot2</option>
+						<option>data.wage→plot2</option>
+						<option>input,data.wage→filter→plot</option>
+					</optgroup>
+					<optgroup label='&nbsp;&nbsp;&nbsp;&nbsp;Confounder'>
+						<option>data.chol→plot2layer</option>
+						<option>data.chol→cause;data.chol→plot2layer</option>
+						<option>data.drug→plot2layer</option>
+						<option>data.kill→cause;data.kill→plot2layer</option>
+						<option>data.stone→plot2layer</option>
+						<option>data.day→plot2</option>
+						<option>data.kill→plot23</option>
+					</optgroup>
+					<optgroup label='&nbsp;&nbsp;&nbsp;&nbsp;Collider'>
+						<option>data.or0→cause;data.or0→plot2layer</option>
+						<option>data.or1→cause;data.or1→plot2layer</option>
+						<option>data.or2→cause;data.or2→plot2layer</option>
+						<option>data.coin→plot2layer</option>
+						<option>data.car→plot2layer</option>
+						<option>data.hire→plot2layer</option>
+						<option>data.hire→plot2</option>
+					</optgroup>
+					<optgroup label='&nbsp;&nbsp;&nbsp;&nbsp;Misc.'>
+						<option>data.gap→plot2</option>
+						<option>data.french→plot2layer</option>
+						<option>data.age→plot2</option>
+					</optgroup>
+				</optgroup>
+				<optgroup label='Econ'>
+					<option>input,data.econ→filter→plot</option>
+				</optgroup>
+				<optgroup label='Stats'>
+					<option>data.prob→prob2oddstable</option>
+					<option>data.odds→oddschain2oddstable</option>
+				</optgroup>
+			</select>
+			<input id='netstr' value='input,data.prog→prolog' size=50>
+			<button onclick='ui.makenet()'>Make Net</button><br>
+			<br>
+			<hr>
+			<div id='net'></div>
+		</center>
+	</body>
+</html>
