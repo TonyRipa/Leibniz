@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2024.12.20
+Date:	2025.01.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -249,7 +249,9 @@ In the alternative, rather than changing the semantics of algebra, we can change
 
 #### 2.2.1 Extension Functions
 
-We may distinguish between objects, and the measures of those objects. We might have a particular line-segment S. The length of S might be L. S and L are different types. S may be of type geometric object. L may be of type real number. Since L is a real number, and since 0 is a real number, it may be that L=0. Since 0 is not a geometric object, it cannot be the case that S=0. So, while division by L could result in division by zero, division by S can not. Consider an example.
+We may distinguish between objects, and the measures of those objects. We might have a particular line-segment S. The length of S might be L. S and L are different types. S may be of type geometric object. L may be of type real number. Since L is a real number, and since 0 is a real number, it may be that L=0. Since 0 is not a geometric object, it cannot be the case that S=0. So, while division by L could result in division by zero, division by S can not. While a geometric object which can't be divided by is conceivable (e.g. S-S i.e. the empty geometric object), S is not such a geometric object.
+
+Consider an example.
 
 let x,h be line-segments
 
