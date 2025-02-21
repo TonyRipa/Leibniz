@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.01.20
+Date:	2025.02.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -301,7 +301,7 @@ How should we group the parts of "x\*h evaluated at x=2"? Grouping like "(x\*h) 
 
 We may reuse functions by assigning (unifying) them to a Prolog variable (notated using capital letters).  Then later we may use that variable anywhere that we want that function.  Some care need be taken. In making an assignment (really a unification) Prolog uses the = symbol.  In this context, the = is a predicate (something that is true or false).  We also use the = symbol inside an expression.  In this context the = symbol is a functor.  A danger is that incorrect usage, instead of throwing an error message, may result in a functor being interpreted as a predicate, or vice-versa.  This can lead to silent logic errors that are hard to debug.  This is not unlike assignment expressions in c, where if we write "if (x=0)" instead of "if (x==0)" then we get no warning, because in c "x=0" is somewhat unintuitively also an expression.  In the future, to avoid these kinds of problems, we may want to change <code>Leibniz</code>'s syntax.  Instead of writing x\*h@x=2, we may prefer x*h@x←2 or similar.
 
-In the spirit of purism, we also have the option of reusable functions, without relying additional language features (like Prolog variables).  How?  Well, with functions we already have the facility of replacement.  Instead of rewriting the same function in multiple places in the same expression, we may instead write a generic there.  Then we evaluate the entire expression substituting the generic with a function.  This way we only write the function once.  And we didn't have to rely on any new language features to support this.
+In the spirit of purism, we also have the option of reusable functions, without relying on additional language features (like Prolog variables).  How?  Well, with functions we already have the facility of replacement.  Instead of rewriting the same function in multiple places in the same expression, we may instead write a generic there.  Then we evaluate the entire expression substituting the generic with a function.  This way we only write the function once.  And we didn't have to rely on any new language features to support this.
 
 ## 5. Constraints
 
