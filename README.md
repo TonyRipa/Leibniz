@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.02.20
+Date:	2025.03.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -185,7 +185,7 @@ We may use a parse tree approach to parse algebraic expressions. Instead of retu
 
 This is reminiscent of L'Hopital's rule. Yet with L'Hopital's rule, you still employ all the rigmarole of Calculus.
 
-To be clear, it should be stated that <code>Leibniz</code> is not a Calculus system. It is an algebra system. It simply does the algebra so well that it can answer questions which would otherwise require a needlessly complex workaround like Calculus.
+To be clear, it should be stated that <code>Leibniz</code> is not a Calculus system. It is an algebra system. It simply does the algebra so well that it can answer questions which would otherwise require a needlessly complicated workaround like Calculus.
 
 One way to think about where this advantage is coming from is in terms of the properties of the transformation rules. The transformation rules of algebra as they are ordinarily cast, as well as our transformation rules, are transitive ( A transformsto B and B transformsto C implies A transformsto C ). However, in addition, the transformation rules of algebra as they are ordinarily cast, are symmetric transformation rules ( A transformsto B implies B transformsto A ) and reflexive ( A transformsto A ). So the transformsto relation for the rules of algebra as they are ordinarily cast, satisfies all the requirements of an equivalence relation. So, if A transforms to B we can just write A = B. This creates the problem. 1 = 0/0 = 0 implies 0 = 1. By not having symmetry, we avoid that problem 1 → 0/0 and 0 → 0/0 but there's nothing that 0/0 transformto. So, we never get 0 → 1 or 1 → 0 or 0=1.
 
