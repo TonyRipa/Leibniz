@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.03.20
+Date:	2025.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -204,6 +204,8 @@ Consider x+x=2x. What this means depends on the semantics. The normal semantics 
 Consider x/x=1. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. Under that semantics you try many numbers and it works. However, if you try 0 then you get 0/0=1. This is not unambiguously true in normal arithmetic. Therefore, x/x=1 is not unambiguously true in normal algebra.
 
 ### 2.2 Non-Extensional Semantics
+
+Here we introduce what might be seen as a semantics for [indeterminate](<https://en.wikipedia.org/wiki/Indeterminate_(variable)>)s.
 
 We introduce a new class of semantics. This semantic class does not defer to arithmetic for its meaning. The meaning of this class is directly grounded in generic quantities. Consider x+x=2x. This statement is true because when a thing is added to itself, there are 2 of that thing. So, x+x=2x is true. That is the argument. Arithmetic is not used to confirm the statement, because that is not the intention of this new semantic class. Consider x/x=1. How many quantities per quantity are there? The answer is 1. Hence, x/x=1. This statement is judged to be true.
 
