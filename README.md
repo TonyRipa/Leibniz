@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.07.20
+Date:	2025.08.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -272,6 +272,8 @@ We might imagine general rules like a banana always counts twice as much as an a
 When we think about line-segments, something similar happens. We may have line-segments like h. h/h = 1. If a valuation function is created that associates the line-segment h with the real number 0, then nothing changes. h/h = 1 is still true, while h/h = 2 would still be (and always would be) false. This is in line with the previous customer appreciation day example.
 
 Similarly, if it is possible to lay 2 copies of line-segment x end-to-end, and if this is the same as line-segment y, then we have that y = x + x (or y = 2\*x). This is true no matter what length(x) or length(y) is. Furthermore, if y = 2\*x, then y/x = 2. Again this is independent of any valuation function of x or y.
+
+In terms of abstract algebra, these functions (like length) may be ring homomorphisms.
 
 #### 2.2.2 Correspondences
 
