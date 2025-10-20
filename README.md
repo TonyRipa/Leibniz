@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.09.20
+Date:	2025.10.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -280,6 +280,10 @@ In terms of abstract algebra, these functions (like length) may be ring homomorp
 In 2.2.1, we saw objects and extension functions applied to them yielding numbers. The other direction works too.
 
 Consider counting apples. Originally, we may have drawn something like 🍎🍎🍎. If we had to record many, then for convenience we may just use lines like |||. To distinguish 3 apples from 3 bananas we might write |||🍎 or |||🍌. We can think of this as 3\*🍎 or 3\*🍌. We can think of these as pairs (3,🍎) or (3,🍌). This way of thinking has become so natural that 3🍎 seems natural. It seems like 3 represents a pure number, which we must multiply by a unit like 🍎. It seems unnatural to think of 3 as representing 3🍎. However, this can be considered only a habit. In |||, each | may be considered an 🍎. Instead of multiplying we can think of corresponding. Similarly, we can think of substituting | for 🍎. This may seem odd as we are taught to think of substitution in the context of things like variables (or indeterminates) in expressions like x^2+2. However, this may just be a habit. We can substitute (or better yet correspond) for numbers (or digits or ticks) themselves. In functional notation we might write f(|||) = 🍎🍎🍎. In this sense we model apple arithmetic with integer arithmetic directly, without unit multiplier or tuples. In retrospect, this seems quite natural. However, it does seem the mind naturally avoids such an approach. There is a physicist joke: for large values of 3. It is meant as a joke, because apparently 3 only has one value. However, with correspondences such a statement can be given an appropriate corresponding meaning.
+
+#### 2.2.3 Polynumbers
+
+Norman Wildberger's work on polynumbers is a similar semantics.
 
 ## 3. Transcendental
 
