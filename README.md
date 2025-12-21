@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2025.11.20
+Date:	2025.12.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -261,7 +261,9 @@ length(h) = H = 0
 
 length(x) = X
 
-m = len((sqr(x+h)-sqr(x))/h) = len(((x+h)^2-x^2)/h) = len((x^2+2xh+h^2-x^2)/h) = len((2xh+h^2)/h) = len(2x+h) = len(2x)+len(h) = len(2x)+H = len(2x)+0 = len(2x) = 2 \* len(x) = 2 \* X = 2X
+m = (sqr(x+h)-sqr(x))/h = ((x+h)^2-x^2)/h = (x^2+2xh+h^2-x^2)/h = (2xh+h^2)/h = 2x+h
+
+Finally, M = len(m) = len(2x+h) = len(2x)+len(h) = len(2x)+H = len(2x)+0 = len(2x) = 2 \* len(x) = 2 \* X = 2X
 
 While it may be thought that valuation functions like length track some intrinsic property of the object, it may be the case that this idea is weakened once we consider two different measures, like inches or centimeters. It may be further weakened thinking about valuation functions like cost where an apple may be assigned a cost of $2, but on customer appreciation day be assigned a cost of $0. Valuation functions may be extrinsic like the pleasure of the apple. Valuation functions may come into and out of existence, to suit different needs at different times.
 
