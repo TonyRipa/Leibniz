@@ -1,7 +1,7 @@
 
 /*
 	Author:	Anthony John Ripa
-	Date:	12/15/2025
+	Date:	2/20/2026
 	View:	A view library
 */
 
@@ -10,55 +10,52 @@ class View {
 	static me2parkid(dag,me) {
 		let par = dag.par[me]
 		let kid = dag.kid[me]
-		par = par?.join()
-		kid = kid?.join()
 		return {par,kid}
 	}
 
-	static makeinputbig(dag,me,data) {
+	static makeinputbig($cont,dag,me,data) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='180' rows='7'>${data}</textarea>`)
+		$cont.append(`<textarea id='${me}' cols='180' rows='7'>${data}</textarea>`)
 		return ()=>{if (par) putval(me,$('#'+par).val())}
 	}
 
-	static makeselect(dag,me,data) {
+	static makeselect($cont,dag,me,data) {
 		let {par,kid} = View.me2parkid(dag,me)
 		if (Array.isArray(data))
 			data = data.map(d=>'<option>'+d+'</option>')
 		else
 			data = Object.keys(data).map(key=>`<optgroup label='${key}'>`+data[key].map(d=>'<option>'+d+'</option>'))
-		$('.cont:last-of-type').append(`<select id='${me}'>${data}</select>`)
+		$cont.append(`<select id='${me}'>${data}</select>`)
 		return ()=>{}
 	}
 
-	static makeinput(dag,me,data='') {
+	static makeinput($cont,dag,me,data='') {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<input id='${me}' value='${data}' placeholder='${me}'>`)
+		$cont.append(`<input id='${me}' value='${data}' placeholder='${me}'>`)
 		return ()=>{if (par) $('#'+me).val($('#'+par).val())}
 	}
 
-	static makefilter(dag,me) {
+	static makefilter($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
-		return ()=>set_textarea(me,Stats.p(get_input(par.split(',')[0]),id2array(par.split(',')[1])))
+		$cont.append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
+		return ()=>set_textarea(me,Stats.p(get_input(par[0]),id2array(par[1])))
 	}
 
-	static makeprolog(dag,me) {
+	static makeprolog($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		let pars = par.split(',')
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
-		return () => {prolog.do(pars[0],pars[1],me)}
+		$cont.append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
+		return () => {prolog.do(par[0],par[1],me)}
 	}
 
-	static makewhere(dag,me) {
+	static makewhere($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='150' rows='7' placeholder='${me}'></textarea>`)
-		return ()=>set_textarea(me,Frame.fromstr(get_input(par.split(',')[1])).where(get_input(par.split(',')[0])))
+		$cont.append(`<textarea id='${me}' cols='150' rows='7' placeholder='${me}'></textarea>`)
+		return ()=>set_textarea(me,Frame.fromstr(get_input(par[1])).where(get_input(par[0])))
 	}
 
-	static makeoddschain2oddstable(dag,me) {
+	static makeoddschain2oddstable($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='50' rows='10' placeholder='${me}'></textarea>`)
+		$cont.append(`<textarea id='${me}' cols='50' rows='10' placeholder='${me}'></textarea>`)
 		return ()=>{
 			let r = id2array(par,',')[0]
 			let ret = Stats.oddschain2oddstable(r)
@@ -66,9 +63,9 @@ class View {
 		}
 	}
 
-	static makeprob2oddstable(dag,me) {
+	static makeprob2oddstable($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='30' rows='10' placeholder='${me}'></textarea>`)
+		$cont.append(`<textarea id='${me}' cols='30' rows='10' placeholder='${me}'></textarea>`)
 		return ()=>{
 			let ret = ''
 			let p = id2array(par,',')[0]
@@ -87,9 +84,9 @@ class View {
 		}
 	}
 
-	static makeplot(dag,me) {
+	static makeplot($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
 		return () => {
 			let frame = Frame.fromString(get_input(par))
 			$('#'+me).empty()
@@ -100,23 +97,23 @@ class View {
 		}
 	}
 
-	static makenetwork(dag,me) {
+	static makenetwork($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
 		window.godiagram = null
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${me}</div>`)
 		return () => Plot.plotnetwork(me,get_input(par))
 	}
 
-	static makejson2net(dag,me) {
+	static makejson2net($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
 		window.godiagram = null
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${me}</div>`)
 		return () => Plot.json2net(me,get_input(par))
 	}
 
-	static makeplots(dag,me) {
+	static makeplots($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
 		return () => {
 			let frame = Frame.fromString(get_input(par))
 			let frame1 = frame.copy().removecol(1)
@@ -131,9 +128,9 @@ class View {
 		}
 	}
 
-	static makeplot1(dag,me) {
+	static makeplot1($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<span id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</span>`)
+		$cont.append(`<span id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</span>`)
 		return () => {
 			let frame = Frame.fromString(get_input(par))
 			$('#'+me).empty()
@@ -143,9 +140,9 @@ class View {
 		}
 	}
 
-	static makeplot2(dag,me) {
+	static makeplot2($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
 		return () => {
 			let frame = Frame.fromString(get_input(par))
 			let frame1 = frame.copy().removecol(1)
@@ -161,9 +158,9 @@ class View {
 		}
 	}
 
-	static makeplot23(dag,me) {
+	static makeplot23($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
 		return () => {
 			let frame = Frame.fromString(get_input(par))
 			let frame1 = frame.copy().removecol(1)
@@ -179,9 +176,9 @@ class View {
 		}
 	}
 
-	static makeplot2layer(dag,me) {
+	static makeplot2layer($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
+		$cont.append(`<div id='${me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${me}</div>`)
 		return () => {
 			$('#'+me).empty()
 			$('#'+me).removeAttr('style')
@@ -190,9 +187,9 @@ class View {
 		}
 	}
 
-	static makecause(dag,me) {
+	static makecause($cont,dag,me) {
 		let {par,kid} = View.me2parkid(dag,me)
-		$('.cont:last-of-type').append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
+		$cont.append(`<textarea id='${me}' cols='50' rows='7' placeholder='${me}'></textarea>`)
 		return ()=>{
 			let csv = get_input(par)
 			let model = new Model(Frame.fromString(csv))
@@ -203,11 +200,10 @@ class View {
 		}
 	}
 
-	static makef(dag,me,f) {
+	static makef($cont,dag,me,f) {
 		let {par,kid} = View.me2parkid(dag,me)
-		let pars = par.split(',')
-		$('.cont:last-of-type').append(`<textarea id='${me}' placeholder='${me}' cols='30'></textarea>`)
-		return ()=>$('#'+me).val(f(...pars.map(p=>$('#'+p).val())))
+		$cont.append(`<textarea id='${me}' placeholder='${me}' cols='30'></textarea>`)
+		return ()=>$('#'+me).val(f(...par.map(p=>$('#'+p).val())))
 	}
 
 }
