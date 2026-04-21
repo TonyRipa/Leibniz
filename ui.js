@@ -1,7 +1,7 @@
 
 /*
 	Author:	Anthony John Ripa
-	Date:	3/10/2026
+	Date:	4/20/2026
 	UI:	A user interface library
 */
 
@@ -34,7 +34,6 @@ class ui {
 						fs.push(ui.make(dag,col))
 					}
 				}
-				ui.makebr()
 			}
 			return fs
 		}
@@ -62,9 +61,6 @@ class ui {
 		$cont.append(view.html)
 		return view.f
 	}
-
-	static makebr() { $('#net').append(`<br>`) }
-	static makebrs() { ui.makebr() ; ui.makebr() }
 
 	static makego(id0,fs,numpars,row) {
 		id0 = id0?.split(',').slice(-1)[0]
@@ -96,13 +92,6 @@ class ui {
 			ui._drawEdgesFallbackStraightLines(dag, $net)
 		})
 		if (window.ELK) { run(); }
-		else {
-			const s = document.createElement('script')
-			s.src = 'https://unpkg.com/elkjs@0.9.3/lib/elk.bundled.js'
-			s.onload = run
-			s.onerror = () => ui._drawEdgesFallbackStraightLines(dag, $net)
-			document.head.appendChild(s)
-		}
 	}
 
 	static _elkLayoutAndRender(dag, $nodes, $net) {
@@ -208,42 +197,6 @@ class ui {
 				}
 			}
 		})
-	}
-
-	// Original simple overlay retained as a safe fallback
-	static _drawEdgesFallbackStraightLines(dag, $net) {
-		$('#net-edges').remove()
-		let width = $net.innerWidth()
-		let height = $net.innerHeight()
-		if (!width) width = $net[0].scrollWidth || 0
-		if (!height) height = $net[0].scrollHeight || 0
-		let svg = $(`<svg id='net-edges' style='position:absolute;top:0;left:0;width:${width}px;height:${height}px;pointer-events:none;overflow:visible'></svg>`)
-		$net.append(svg)
-		let svgEl = svg[0]
-		if (!svgEl || !dag || !dag.par) return
-		for (let child in dag.par) {
-			let parents = dag.par[child] || []
-			let $child = $('#'+child)
-			if ($child.length === 0) continue
-			let co = $child.position()
-			let cx = co.left + $child.outerWidth()/2
-			let cy = co.top + $child.outerHeight()/2
-			for (let p of parents) {
-				let $p = $('#'+p)
-				if ($p.length === 0) continue
-				let po = $p.position()
-				let px = po.left + $p.outerWidth()/2
-				let py = po.top + $p.outerHeight()/2
-				let line = document.createElementNS('http://www.w3.org/2000/svg','line')
-				line.setAttribute('x1', px)
-				line.setAttribute('y1', py)
-				line.setAttribute('x2', cx)
-				line.setAttribute('y2', cy)
-				line.setAttribute('stroke', '#aaa')
-				line.setAttribute('stroke-width', '1')
-				svgEl.appendChild(line)
-			}
-		}
 	}
 
 }

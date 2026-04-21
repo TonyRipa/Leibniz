@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2026.03.20
+Date:	2026.04.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -163,7 +163,7 @@ Live Demo of Version 78+ at <a href='https://tonyripa.github.io/Leibniz'>https:/
 
 ## 1. Leibniz
 
-<code>Leibniz</code> is a Rule System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
+<code>Leibniz</code> is a Rewriting System for expression simplification written in Prolog. <code>Leibniz</code> is named after Gottfried Wilhelm Leibniz (one of the inventors of Calculus) whose notation for his calculus was algebraic.
 
 Historically, applying the rules of (elementary) algebra strictly to problems in calculus has led to contradictions.
 
