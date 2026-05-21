@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2026.04.20
+Date:	2026.05.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -196,6 +196,8 @@ Furthermore, if we are always going to return the canonical solution, we might a
 ## 2. Semantics
 
 One way to think about the comparison between <code>Leibniz</code> and other approaches, is in terms of semantics. The term semantics is popular in the field of logic. To logicians, the term semantics is intended to mean something like the everyday word meaning. However, logicians' definition seems somewhat forced, and alternative interpretations seem needed. Nevertheless, the word can be used to refer to a practical distinction in logic. Sentences have two things about them that can be studied. One is their syntax. This is like the way the symbols are arranged in the sentence, and relates to the rules of arranging such symbols. The second is their semantics. This is the so-called meaning of the sentence. As an example, one can imagine the same sequence of symbols having one meaning in one language, and a different meaning in another language. This is the practical distinction that I want now.
+
+A possibly better framing is that every syntax can be seen a category. Also every semantics can be seen as a category. And there are morphisms between categories.
 
 ### 2.1 Extensional Semantics
 
