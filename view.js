@@ -1,7 +1,7 @@
 
 /*
 	Author:	Anthony John Ripa
-	Date:	3/15/2026
+	Date:	6/19/2026
 	View:	A view library
 */
 
@@ -16,8 +16,8 @@ class View {
 	}
 
 	init() {
-		if (this.me.startsWith('datas_')) this.select(Data.get(this.me))
-		if (this.me.startsWith('data_')) this.inputbig(Data.get(this.me))
+		if (this.me.startsWith('datas.')) this.select(Data.get(this.me))
+		if (this.me.startsWith('data.')) this.inputbig(Data.get(this.me))
 		switch(this.me) {
 			case 'input':
 			case 'input2': this.input() ; break
@@ -58,13 +58,42 @@ class View {
 		}
 	}
 
+	static el(id) {
+		return $('#' + CSS.escape(id))
+	}
+
 	static get(id) {
-		return $('#'+id).val()
+		if (Array.isArray(id)) return id.map(x => View.get(x))
+		let ret = View.el(id).val().replace(/\\n/g,'\n')
+		if (isCSV(ret)) ret = csv2array(ret)
+		return ret
+	}
+
+	static set(id, val) {
+		let me = View.el(id)
+		let setter = (me[0].tagName=='DIV') ? 'html' : 'val'
+		val = fixval(val)
+		me[setter](val)
+		function fixval(val) {
+			let d = dim(val)
+			if (d == -1) return undefined
+			if (d ==  0) return val.toString()
+			if (d ==  1) return val
+			if (d ==  2) return val.join('\n')
+		}				
+	}
+
+	in(i = 0) {
+		return View.get(this.par[i])
+	}
+
+	ins() {
+		return this.par.map(p => View.get(p))
 	}
 
 	inputbig(data) {
 		this.html = `<textarea id='${this.me}' cols='180' rows='7'>${data}</textarea>`
-		this.f = ()=>{if (this.par) putval(this.me,View.get(this.par))}
+		this.f = ()=>{if (this.par) View.set(this.me,this.in())}
 	}
 
 	select(data) {
@@ -78,30 +107,30 @@ class View {
 
 	input(data='') {
 		this.html = `<input id='${this.me}' value='${data}' placeholder='${this.me}'>`
-		this.f = ()=>{if (this.par) $('#'+this.me).val(View.get(this.par))}
+		this.f = ()=>{if (this.par) View.set(this.me,this.in())}
 	}
 
 	filter() {
 		this.html = `<textarea id='${this.me}' cols='50' rows='7' placeholder='${this.me}'></textarea>`
-		this.f = ()=>set_textarea(this.me,Stats.p(View.get(this.par[0]),id2array(this.par[1])))
+		this.f = ()=>View.set(this.me,Stats.p(...this.ins()))
 	}
 
 	prolog() {
 		this.html = `<textarea id='${this.me}' cols='50' rows='7' placeholder='${this.me}'></textarea>`
-		this.f = () => {prolog.do(this.par[0],this.par[1],this.me)}
+		this.f = () => {prolog.do(...this.ins(),this.me)}
 	}
 
 	where() {
 		this.html = `<textarea id='${this.me}' cols='150' rows='7' placeholder='${this.me}'></textarea>`
-		this.f = ()=>set_textarea(this.me,Frame.fromstr(View.get(this.par[1])).where(View.get(this.par[0])))
+		this.f = ()=>View.set(this.me,Frame.fromHeadedRows(this.in(1)).where(this.in()))
 	}
 
 	oddschain2oddstable() {
 		this.html = `<textarea id='${this.me}' cols='50' rows='10' placeholder='${this.me}'></textarea>`
 		this.f = ()=>{
-			let r = id2array(this.par,',')[0]
+			let r = this.in()[0]
 			let ret = Stats.oddschain2oddstable(r)
-			set_textarea(this.me,ret)
+			View.set(this.me,ret)
 		}
 	}
 
@@ -109,7 +138,7 @@ class View {
 		this.html = `<textarea id='${this.me}' cols='30' rows='10' placeholder='${this.me}'></textarea>`
 		this.f = ()=>{
 			let ret = ''
-			let p = id2array(this.par,',')[0]
+			let p = this.in()[0]
 			for (let i = 0 ; i < p.length ; i++) {
 				for (let j = 0 ; j < p.length ; j++) {
 					let odds = p[i] / p[j]
@@ -121,16 +150,16 @@ class View {
 				}
 				if (i<p.length-1) ret += '\n'
 			}
-			set_textarea(this.me,ret)
+			View.set(this.me,ret)
 		}
 	}
 
 	plot() {
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</div>`
 		this.f = () => {
-			let frame = Frame.fromString(View.get(this.par))
-			$('#'+this.me).empty()
-			$('#'+this.me).removeAttr('style')
+			let frame = Frame.fromHeadedRows(this.in())
+			View.el(this.me).empty()
+			View.el(this.me).removeAttr('style')
 			if (frame.numcols()==2) Plot.fromFrame(frame).plot1 (this.me)
 			if (frame.numcols()==3) Plot.fromFrame(frame).table2(this.me)
 			if (frame.numcols()==4) Plot.fromFrame(frame).table3(this.me)
@@ -140,25 +169,25 @@ class View {
 	network() {
 		window.godiagram = null
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${this.me}</div>`
-		this.f = () => Plot.plotnetwork(this.me,View.get(this.par))
+		this.f = () => Plot.plotnetwork(this.me,this.in())
 	}
 
 	json2net() {
 		window.godiagram = null
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:640px;height:400px;color:#999'>${this.me}</div>`
-		this.f = () => Plot.json2net(this.me,View.get(this.par))
+		this.f = () => Plot.json2net(this.me,this.in())
 	}
 
 	plots() {
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</div>`
 		this.f = () => {
-			let frame = Frame.fromString(View.get(this.par))
+			let frame = Frame.fromHeadedRows(this.in())
 			let frame1 = frame.copy().removecol(1)
 			let frame2 = frame.copy().removecol(0)
 			if (frame.numcols() >= 3) {
-				$('#'+this.me).empty()
-				$('#'+this.me).removeAttr('style')
-				$('#'+this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td></tr></table>`)
+				View.el(this.me).empty()
+				View.el(this.me).removeAttr('style')
+				View.el(this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td></tr></table>`)
 				Plot.fromFrame(frame1).plot1(this.me+1)
 				Plot.fromFrame(frame2).plot1(this.me+2)
 			}			
@@ -168,10 +197,10 @@ class View {
 	plot1() {
 		this.html = `<span id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</span>`
 		this.f = () => {
-			let frame = Frame.fromString(View.get(this.par))
-			$('#'+this.me).empty()
-			$('#'+this.me).removeAttr('style')
-			$('#'+this.me).append(`<table><tr><td id='${this.me}2' width='400px'></td></tr></table>`)
+			let frame = Frame.fromHeadedRows(this.in())
+			View.el(this.me).empty()
+			View.el(this.me).removeAttr('style')
+			View.el(this.me).append(`<table><tr><td id='${this.me}2' width='400px'></td></tr></table>`)
 			Plot.fromFrame(frame).plot1(this.me+'2')
 		}
 	}
@@ -179,13 +208,13 @@ class View {
 	plot2() {
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</div>`
 		this.f = () => {
-			let frame = Frame.fromString(View.get(this.par))
+			let frame = Frame.fromHeadedRows(this.in())
 			let frame1 = frame.copy().removecol(1)
 			let frame2 = frame.copy().removecol(0)
 			if (frame.numcols() >= 3) {
-				$('#'+this.me).empty()
-				$('#'+this.me).removeAttr('style')
-				$('#'+this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td><td id='${this.me}3' width='500px'></td></tr></table>`)
+				View.el(this.me).empty()
+				View.el(this.me).removeAttr('style')
+				View.el(this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td><td id='${this.me}3' width='500px'></td></tr></table>`)
 				Plot.fromFrame(frame1).plot1(this.me+1)
 				Plot.fromFrame(frame ).plot2(this.me+2)
 				Plot.fromFrame(frame2).plot1(this.me+3)
@@ -196,13 +225,13 @@ class View {
 	plot23() {
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</div>`
 		this.f = () => {
-			let frame = Frame.fromString(View.get(this.par))
+			let frame = Frame.fromHeadedRows(this.in())
 			let frame1 = frame.copy().removecol(1)
 			let frame2 = frame.copy().removecol(0)
 			if (frame.numcols() >= 3) {
-				$('#'+this.me).empty()
-				$('#'+this.me).removeAttr('style')
-				$('#'+this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td><td id='${this.me}3' width='500px'></td></tr></table>`)
+				View.el(this.me).empty()
+				View.el(this.me).removeAttr('style')
+				View.el(this.me).append(`<table><tr><td id='${this.me}1' width='500px'></td><td id='${this.me}2' width='500px'></td><td id='${this.me}3' width='500px'></td></tr></table>`)
 				Plot.fromFrame(frame1).plot1 (this.me+1)
 				Plot.fromFrame(frame ).plot23(this.me+2)
 				Plot.fromFrame(frame2).plot1 (this.me+3)
@@ -213,28 +242,28 @@ class View {
 	plot2layer() {
 		this.html = `<div id='${this.me}' style='border:thin solid black;width:100px;height:50px;color:#999'>${this.me}</div>`
 		this.f = () => {
-			$('#'+this.me).empty()
-			$('#'+this.me).removeAttr('style')
-			$('#'+this.me).append(`<table><tr><td id='${this.me}2' width='500px'></td></tr></table>`)
-			Plot.fromString(View.get(this.par)).plot2layer(this.me+2)
+			View.el(this.me).empty()
+			View.el(this.me).removeAttr('style')
+			View.el(this.me).append(`<table><tr><td id='${this.me}2' width='500px'></td></tr></table>`)
+			Plot.fromHeadedRows(this.in()).plot2layer(this.me+2)
 		}
 	}
 
 	cause() {
 		this.html = `<textarea id='${this.me}' cols='50' rows='7' placeholder='${this.me}'></textarea>`
 		this.f = ()=>{
-			let csv = View.get(this.par)
-			let model = new Model(Frame.fromString(csv))
+			let csv = this.in()
+			let model = new Model(Frame.fromHeadedRows(csv))
 			let middle = model.get_control_name()
 			let ends = model.get_noncontrol_names()
 			let graph = ends[0] + '-' + middle + '-' + ends[1]
-			set_textarea(this.me,graph)
+			View.set(this.me,graph)
 		}
 	}
 
 	func(f) {
 		this.html = `<textarea id='${this.me}' placeholder='${this.me}' cols='30'></textarea>`
-		this.f = ()=>$('#'+this.me).val(f(...this.par.map(p=>View.get(p))))
+		this.f = ()=>View.set(this.me,f(...this.ins()))
 	}
 
 }

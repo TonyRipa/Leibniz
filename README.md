@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2026.05.20
+Date:	2026.06.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -183,7 +183,7 @@ We may use a parse tree approach to parse algebraic expressions. Instead of retu
   			1@h=0	---		1
 </pre>
 
-This is reminiscent of L'Hopital's rule. Yet with L'Hopital's rule, you still employ all the rigmarole of Calculus.
+This is reminiscent of L'Hôpital's rule. Yet with L'Hopital's rule, you still employ all the rigmarole of Calculus.
 
 To be clear, it should be stated that <code>Leibniz</code> is not a Calculus system. It is an algebra system. It simply does the algebra so well that it can answer questions which would otherwise require a needlessly complicated workaround like Calculus.
 
