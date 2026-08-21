@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2026.07.20
+Date:	2026.08.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -203,7 +203,7 @@ A possibly better framing is that every syntax can be seen a category. Also ever
 
 Consider x+x=2x. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. This semantics defers algebraic truths to arithmetic truths.
 
-Consider x/x=1. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. Under that semantics you try many numbers and it works. However, if you try 0 then you get 0/0=1. This is not unambiguously true in normal arithmetic. Therefore, x/x=1 is not unambiguously true in normal algebra.
+Consider x/x=1. What this means depends on the semantics. The normal semantics is that it means that no matter what you substitute in for x, the equation is still true. Under that semantics you try many numbers and it works. However, if you try 0 then you get 0/0=1. This is not unambiguously true in normal arithmetic. Therefore, x/x=1 is not unambiguously true in normal algebra. By normal algebra, we mean [Elementary Algebra A.K.A. High School Algebra A.K.A. College Algebra](https://en.wikipedia.org/wiki/Elementary_algebra).
 
 ### 2.2 Non-Extensional Semantics
 
