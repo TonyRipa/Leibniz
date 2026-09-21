@@ -3,7 +3,7 @@
 
 Author:	Anthony John Ripa
 
-Date:	2026.08.20
+Date:	2026.09.20
 
 Live Demo of Version  1 at <a href='https://swish.swi-prolog.org/p/hVEWFHXN.pl'>https://swish.swi-prolog.org/p/hVEWFHXN.pl</a>
 
@@ -287,7 +287,7 @@ Consider counting apples. Originally, we may have drawn something like 🍎🍎�
 
 #### 2.2.3 Polynumbers
 
-Norman Wildberger's work on polynumbers is a similar semantics.
+Norman Wildberger's work on [Polynumbers](https://www.youtube.com/watch?v=-Ad6pYjCAmg&list=PLIljB45xT85DGxj1x_dyaSggbauAgrB6R&index=58) is a similar semantics.
 
 ## 3. Series
 
